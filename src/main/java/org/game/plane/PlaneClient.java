@@ -10,8 +10,14 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PlaneClient extends JFrame {
+    //窗体参数
+    public static final int X = 400;
+    public static final int Y = 400;
+    public static final int deviation = 10;
     //蛇的初始坐标
     public static int StartPositionX = 240;
     public static int StartPositionY = 340;
@@ -20,7 +26,7 @@ public class PlaneClient extends JFrame {
     public static int BulletSize = 10;
     //使用链表维护蛇身节点数据
     public static LinkedList<Plane> planeList = new LinkedList<>();
-    public static LinkedList<Bullet> bulletList = new LinkedList<>();
+    public static List<Bullet> bulletList = new CopyOnWriteArrayList<>();
     //游戏速度
     public final static int GAME_SPEED = 20;
     //主飞机
@@ -36,7 +42,7 @@ public class PlaneClient extends JFrame {
 
 
     public void lanch() throws InterruptedException {
-        this.setBounds(200, 100, 400, 400); //设置窗体大小和位置
+        this.setBounds(200, 100, X, Y); //设置窗体大小和位置
         this.setVisible(true); //使用该属性才能显示窗体
         //实现程序运行关闭的功能
         this.addWindowListener(new WindowAdapter() {
@@ -65,10 +71,22 @@ public class PlaneClient extends JFrame {
 
     private void drawBullets(Graphics g) {
         for (Bullet bullet : bulletList) {
+            recyclingBullets();
             bullet.move();
             g.setColor(Color.black);
             g.fillRect(bullet.getPositionX(), bullet.getPositionY(), PlaneSize, PlaneSize);
         }
+    }
+
+    /**
+     * 回收越界子弹
+     */
+    private void recyclingBullets() {
+        System.out.println("当前子弹数量 -> " + bulletList.size());
+        bulletList.removeIf(bullet -> bullet.getPositionX() < deviation
+                || bullet.getPositionX() > (X - deviation)
+                || bullet.getPositionY() < deviation
+                || bullet.getPositionY() > (Y - deviation));
     }
 
     //画图函数，这个是重写paint，Frame类的内置函数

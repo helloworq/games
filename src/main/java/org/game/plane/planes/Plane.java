@@ -21,11 +21,11 @@ public class Plane extends FlyingObj {
 
     public void shoot() {
         Bullet bullet = weapon.getBullet(getPositionX(), getPositionY(), getDirection());
-        PlaneClient.bulletList.addLast(bullet);
+        PlaneClient.bulletList.add(bullet);
     }
 
     public void attack() {
         Bullet bullet = weapon.getBullet(getPositionX(), getPositionY(), getDirection());
-        PlaneClient.bulletList.addLast(bullet);
+        PlaneClient.bulletList.add(bullet);
     }
 }
