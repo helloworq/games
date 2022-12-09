@@ -56,8 +56,7 @@ public class SnakeClient extends JFrame {
         });
 
         //蛇链表加入头节点
-        Node snakeNode = new SnakeNode(StartPosition_X, StartPosition_Y);
-        SnakeList.addFirst(snakeNode);
+        SnakeList.addFirst(new SnakeNode(StartPosition_X, StartPosition_Y));
         //调用键盘
         addKeyListener(new KeyMointer());
         //开始
