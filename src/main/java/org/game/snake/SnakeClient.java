@@ -15,22 +15,22 @@ import java.util.LinkedList;
 
 public class SnakeClient extends JFrame {
     //蛇的初始坐标
-    public static int StartPosition_X = 40;
-    public static int StartPosition_Y = 40;
+    private final static int StartPosition_X = 40;
+    private final static int StartPosition_Y = 40;
     //蛇身大小
-    public static int SnakeSize = 20;
+    private final static int SnakeSize = 20;
     //普通食物，后期可扩展为数组达成多个食物
-    public static Food food = new NormalFood();
+    private static Food food = new NormalFood();
     //食物是否被吃
-    public static int FoodAlive = 0;
+    private static int FoodAlive = 0;
     //蛇颜色
-    public static Color SnakeColor = Color.red;
+    public static final Color SnakeColor = Color.red;
     //初始往右走
     public static Direction SnakeDirection = Direction.RIGHT;
     //使用链表维护蛇身节点数据
-    public static LinkedList<Node> SnakeList = new LinkedList<>();
+    private final static LinkedList<Node> SnakeList = new LinkedList<>();
     //游戏速度
-    public final static int GAME_SPEED = 200;
+    private final static int GAME_SPEED = 200;
     //蛇身图片
     //Image normalFood= ImageIO.read(new FileInputStream("C:\\Users\\12733\\Desktop\\food.jpg"));
     //食物图片
@@ -45,7 +45,7 @@ public class SnakeClient extends JFrame {
     }
 
 
-    public void lanch() throws InterruptedException {
+    private void lanch() throws InterruptedException {
         this.setBounds(200, 100, 400, 400); //设置窗体大小和位置
         this.setVisible(true); //使用该属性才能显示窗体
         //实现程序运行关闭的功能
@@ -66,7 +66,7 @@ public class SnakeClient extends JFrame {
         }
     }
 
-    public static void snakeMove() {
+    private static void snakeMove() {
         //蛇移动采取增头去尾方法,同时在增头去尾的过程中判断蛇头是否与食物坐标重合，如果重合则不去尾
         //达到蛇身增加的目的
         switch (SnakeClient.SnakeDirection) {
