@@ -144,6 +144,21 @@ public class SnakeClient extends JFrame {
         }
     }
 
+    private void drawNode(Graphics g) {
+        //画蛇
+        for (Node node : SnakeList) {
+            g.setColor(SnakeNode.snakeColor);
+            g.fillRect(node.getPosition_X(), node.getPosition_Y(), SnakeSize, SnakeSize);
+            //g.drawImage(snakeBody,snakeList.get(i).position_X,snakeList.get(i).position_Y,snakeSIZE,snakeSIZE,null);
+        }
+    }
+
+    private void drawFood(Graphics g) {
+        //画食物
+        g.fillRect(food.getPosition_X(), food.getPosition_Y(), SnakeSize, SnakeSize);
+        //g.drawImage(normalFood,food.position_X,food.position_Y,snakeSIZE,snakeSIZE,null);
+    }
+
     //画图函数，这个是重写paint，Frame类的内置函数
     @Override
     public void paint(Graphics g) {
@@ -152,14 +167,7 @@ public class SnakeClient extends JFrame {
         g.clearRect(0, 0, 400, 400);
         snakeMove();
         creatFood();
-        //画蛇
-        for (Node node : SnakeList) {
-            g.setColor(SnakeNode.snakeColor);
-            g.fillRect(node.getPosition_X(), node.getPosition_Y(), SnakeSize, SnakeSize);
-            //g.drawImage(snakeBody,snakeList.get(i).position_X,snakeList.get(i).position_Y,snakeSIZE,snakeSIZE,null);
-        }
-        //画食物
-        g.fillRect(food.getPosition_X(), food.getPosition_Y(), SnakeSize, SnakeSize);
-        //g.drawImage(normalFood,food.position_X,food.position_Y,snakeSIZE,snakeSIZE,null);
+        drawNode(g);
+        drawFood(g);
     }
 }
