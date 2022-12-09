@@ -16,6 +16,9 @@ public class KeyMointer extends KeyAdapter {
     public void keyPress(KeyEvent e) {
         //根据键入的数据改变蛇方向控制符
         Direction direction = Direction.getByChar(e.getKeyChar());
+        if (null == direction) {
+            return;
+        }
         switch (direction) {
             case UP: {
                 if (SnakeClient.SnakeDirection.equals(Direction.LEFT) || SnakeClient.SnakeDirection.equals(Direction.RIGHT))

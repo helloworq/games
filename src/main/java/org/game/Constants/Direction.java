@@ -16,6 +16,6 @@ public enum Direction {
     public final char direction;
 
     public static Direction getByChar(char dir) {
-        return Arrays.stream(Direction.values()).filter(e -> e.direction == dir).findFirst().orElse(UP);
+        return Arrays.stream(Direction.values()).filter(e -> e.direction == dir).findFirst().orElse(null);
     }
 }

@@ -11,6 +11,5 @@ public class NormalFood extends Food {
         position_Y = ((int) (Math.random() * 20 + 1)) * 20;
     }
 
-    int awardGrades = 1;//吃到后的奖励分数
     public static Color FoodColor = Color.GREEN;
 }

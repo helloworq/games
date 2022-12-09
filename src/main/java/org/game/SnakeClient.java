@@ -4,6 +4,7 @@ import org.game.Constants.Direction;
 import org.game.Event.KeyMointer;
 import org.game.Food.Food;
 import org.game.Food.NormalFood;
+import org.game.Snake.Node;
 import org.game.Snake.SnakeNode;
 
 import javax.swing.*;
@@ -27,7 +28,7 @@ public class SnakeClient extends JFrame {
     //初始往右走
     public static Direction SnakeDirection = Direction.RIGHT;
     //使用链表维护蛇身节点数据
-    public static LinkedList<SnakeNode> SnakeList = new LinkedList<>();
+    public static LinkedList<Node> SnakeList = new LinkedList<>();
     //游戏速度
     public final static int GAME_SPEED = 200;
     //蛇身图片
@@ -55,7 +56,7 @@ public class SnakeClient extends JFrame {
         });
 
         //蛇链表加入头节点
-        SnakeNode snakeNode = new SnakeNode(StartPosition_X, StartPosition_Y);
+        Node snakeNode = new SnakeNode(StartPosition_X, StartPosition_Y);
         SnakeList.addFirst(snakeNode);
         //调用键盘
         addKeyListener(new KeyMointer());
@@ -152,9 +153,9 @@ public class SnakeClient extends JFrame {
         snakeMove();
         creatFood();
         //画蛇
-        for (int i = 0; i < SnakeList.size(); i++) {
+        for (Node node : SnakeList) {
             g.setColor(SnakeNode.snakeColor);
-            g.fillRect(SnakeList.get(i).getPosition_X(), SnakeList.get(i).getPosition_Y(), SnakeSize, SnakeSize);
+            g.fillRect(node.getPosition_X(), node.getPosition_Y(), SnakeSize, SnakeSize);
             //g.drawImage(snakeBody,snakeList.get(i).position_X,snakeList.get(i).position_Y,snakeSIZE,snakeSIZE,null);
         }
         //画食物
