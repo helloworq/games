@@ -1,4 +1,4 @@
-package org.game.Snake;
+package org.game.snake.node;
 
 import lombok.Data;
 

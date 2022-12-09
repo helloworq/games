@@ -1,7 +1,7 @@
-package org.game.Event;
+package org.game.snake.event;
 
-import org.game.Constants.Direction;
-import org.game.SnakeClient;
+import org.game.snake.SnakeClient;
+import org.game.snake.constants.Direction;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

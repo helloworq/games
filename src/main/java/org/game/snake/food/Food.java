@@ -1,4 +1,4 @@
-package org.game.Food;
+package org.game.snake.food;
 
 import lombok.Data;
 

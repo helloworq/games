@@ -1,4 +1,4 @@
-package org.game.Constants;
+package org.game.snake.constants;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

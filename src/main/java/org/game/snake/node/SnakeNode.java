@@ -1,7 +1,7 @@
-package org.game.Snake;
+package org.game.snake.node;
 
 import lombok.Data;
-import org.game.SnakeClient;
+import org.game.snake.SnakeClient;
 
 import java.awt.*;
 

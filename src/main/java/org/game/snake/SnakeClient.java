@@ -1,11 +1,11 @@
-package org.game;
+package org.game.snake;
 
-import org.game.Constants.Direction;
-import org.game.Event.KeyMointer;
-import org.game.Food.Food;
-import org.game.Food.NormalFood;
-import org.game.Snake.Node;
-import org.game.Snake.SnakeNode;
+import org.game.snake.constants.Direction;
+import org.game.snake.event.KeyMointer;
+import org.game.snake.food.Food;
+import org.game.snake.food.NormalFood;
+import org.game.snake.node.Node;
+import org.game.snake.node.SnakeNode;
 
 import javax.swing.*;
 import java.awt.*;
