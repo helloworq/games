@@ -1,6 +1,7 @@
 package org.game.plane;
 
 import org.game.plane.bullets.Bullet;
+import org.game.plane.constans.Direction;
 import org.game.plane.event.KeyMointer;
 import org.game.plane.planes.Plane;
 
@@ -23,7 +24,7 @@ public class PlaneClient extends JFrame {
     //游戏速度
     public final static int GAME_SPEED = 20;
     //主飞机
-    public static final Plane plane = new Plane(StartPositionX, StartPositionY);
+    public static final Plane plane = new Plane(StartPositionX, StartPositionY, Direction.UP);
 
     public PlaneClient() {
     }
@@ -45,7 +46,7 @@ public class PlaneClient extends JFrame {
         });
 
         //初始化第一架飞机
-        planeList.add(new Plane(StartPositionX, StartPositionY));
+        planeList.add(plane);
         //调用键盘
         addKeyListener(new KeyMointer());
         //开始
@@ -57,10 +58,17 @@ public class PlaneClient extends JFrame {
 
     private void drawPlane(Graphics g) {
 //        for (Plane plane : planeList) {
-//            System.out.println(plane.getPositionX());
-            g.setColor(Color.gray);
-            g.fillRect(plane.getPositionX(), plane.getPositionY(), PlaneSize, PlaneSize);
+        g.setColor(Color.gray);
+        g.fillRect(plane.getPositionX(), plane.getPositionY(), PlaneSize, PlaneSize);
 //        }
+    }
+
+    private void drawBullets(Graphics g) {
+        for (Bullet bullet : bulletList) {
+            bullet.move();
+            g.setColor(Color.black);
+            g.fillRect(bullet.getPositionX(), bullet.getPositionY(), PlaneSize, PlaneSize);
+        }
     }
 
     //画图函数，这个是重写paint，Frame类的内置函数
@@ -70,5 +78,6 @@ public class PlaneClient extends JFrame {
         //清屏
         g.clearRect(0, 0, 400, 400);
         drawPlane(g);
+        drawBullets(g);
     }
 }
