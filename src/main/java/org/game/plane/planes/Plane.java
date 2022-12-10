@@ -4,6 +4,7 @@ import lombok.Data;
 import org.game.plane.PlaneClient;
 import org.game.plane.bullets.Bullet;
 import org.game.plane.common.FlyingObj;
+import org.game.plane.constans.Config;
 import org.game.plane.constans.Direction;
 import org.game.plane.weapon.Weapon;
 
@@ -16,7 +17,7 @@ public class Plane extends FlyingObj {
     }
 
     public Plane(int startX, int startY, Direction direction) {
-        super(startX, startY, direction);
+        super(startX, startY, direction, Config.INIT_ALIVE);
     }
 
     public void shoot() {

@@ -8,14 +8,16 @@ public class FlyingObj {
     private int positionX;
     private int positionY;
     private Direction direction;
+    private int live;
 
     public FlyingObj() {
     }
 
-    public FlyingObj(int startX, int startY, Direction direction) {
+    public FlyingObj(int startX, int startY, Direction direction, int live) {
         this.positionX = startX;
         this.positionY = startY;
         this.direction = direction;
+        this.live = live;
     }
 
     public void moveUp() {

@@ -1,6 +1,7 @@
 package org.game.plane;
 
 import org.game.plane.bullets.Bullet;
+import org.game.plane.constans.Config;
 import org.game.plane.constans.Direction;
 import org.game.plane.event.KeyMointer;
 import org.game.plane.planes.Plane;
@@ -78,11 +79,15 @@ public class PlaneClient extends JFrame {
         }
     }
 
+    private void drawMsg(Graphics g) {
+        g.drawString("生命: " + plane.getLive(), 330, 50);
+        g.drawString("积分: " + Config.INIT_SCORES, 330, 70);
+    }
+
     /**
      * 回收越界子弹
      */
     private void recyclingBullets() {
-        System.out.println("当前子弹数量 -> " + bulletList.size());
         bulletList.removeIf(bullet -> bullet.getPositionX() < deviation
                 || bullet.getPositionX() > (X - deviation)
                 || bullet.getPositionY() < deviation
@@ -93,9 +98,9 @@ public class PlaneClient extends JFrame {
     @Override
     public void paint(Graphics g) {
         //逐个读取链表中的节点数据，循环打印节点
-        //清屏
-        g.clearRect(0, 0, 400, 400);
+        g.clearRect(0, 0, 400, 400);//清屏
         drawPlane(g);
         drawBullets(g);
+        drawMsg(g);
     }
 }
