@@ -21,10 +21,9 @@ public class KeyMointer extends KeyAdapter {
         keyPress(e);
     }
 
-    public void keyPress(KeyEvent e) {
+    private void keyPress(KeyEvent e) {
         //根据键入的数据改变蛇方向控制符
         Direction direction = Direction.getByChar(e.getKeyChar());
-        System.out.println(e.getKeyCode());
         if (Objects.nonNull(direction)) {
             handleMove(direction);
             return;

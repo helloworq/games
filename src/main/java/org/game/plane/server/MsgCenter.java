@@ -14,12 +14,13 @@ import java.util.function.BiConsumer;
 public class MsgCenter {
     private static final Map<Channel, String> USER_POOL = new ConcurrentHashMap<>();
     //用户
-    public static final String ALL = "公告 ";
+    public static final String ALL = "公告: ";
     //操作符前缀
     public static final String OP_SPLIT = "-";
     public static final String SPEAK = ": ";
     private static final Map<String, BiConsumer<Channel, String>> OperationPrefix =
-            Map.of("@@ChangeName", (channel, name) -> USER_POOL.computeIfPresent(channel, (k, v) -> name));
+            Map.of("@@ChangeName", (channel, name) -> USER_POOL.computeIfPresent(channel, (k, v) -> name),
+                    "@@Msg", (channel, msg) -> noticeAll(getUser(channel), msg));
 
     public static void execIfDec(Channel channel, String msg) {
         if (StringUtil.isNullOrEmpty(msg)) {
@@ -28,12 +29,15 @@ public class MsgCenter {
         String[] data = msg.split(OP_SPLIT);
         String op = data[0];
         if (data.length <= 1) {
-            noticeAll(USER_POOL.get(channel), msg);//非操作输入视为广播消息
             return;
         }
         if (OperationPrefix.containsKey(op)) {
             OperationPrefix.get(op).accept(channel, data[1]);
         }
+    }
+
+    private static String getUser(Channel channel) {
+        return USER_POOL.get(channel);
     }
 
     public static void addUser(Channel channel, String name) {
