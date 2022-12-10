@@ -64,10 +64,10 @@ public class PlaneClient extends JFrame {
     }
 
     private void drawPlane(Graphics g) {
-//        for (Plane plane : planeList) {
-        g.setColor(Color.gray);
-        g.fillRect(plane.getPositionX(), plane.getPositionY(), PlaneSize, PlaneSize);
-//        }
+        for (Plane plane : planeList) {
+            g.setColor(Color.gray);
+            g.fillRect(plane.getPositionX(), plane.getPositionY(), PlaneSize, PlaneSize);
+        }
     }
 
     private void drawBullets(Graphics g) {

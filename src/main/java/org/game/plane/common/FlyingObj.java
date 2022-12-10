@@ -5,6 +5,7 @@ import org.game.plane.constans.Direction;
 
 @Data
 public class FlyingObj {
+    private String id;
     private int positionX;
     private int positionY;
     private Direction direction;

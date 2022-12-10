@@ -33,16 +33,18 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 
+import javax.net.ssl.SSLException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * This is an example of a WebSocket client.
  * <p>
  * In order to run this example you need a compatible WebSocket server.
  * Therefore you can either start the WebSocket server from the examples
- * by running {@link io.netty.example.http.websocketx.server.WebSocketServer}
+ * by running {@link }
  * or connect to an existing WebSocket server such as
  * <a href="https://www.websocket.org/echo.html">ws://echo.websocket.org</a>.
  * <p>
@@ -54,7 +56,7 @@ public final class WebSocketClient {
 
     static final String URL = System.getProperty("url", "ws://127.0.0.1:8080/websocket");
 
-    public static void main(String[] args) throws Exception {
+    public static Channel connect() throws InterruptedException, URISyntaxException, SSLException {
         URI uri = new URI(URL);
         String scheme = uri.getScheme() == null ? "ws" : uri.getScheme();
         final String host = uri.getHost() == null ? "127.0.0.1" : uri.getHost();
@@ -73,7 +75,7 @@ public final class WebSocketClient {
 
         if (!"ws".equalsIgnoreCase(scheme) && !"wss".equalsIgnoreCase(scheme)) {
             System.err.println("Only WS(S) is supported.");
-            return;
+            return null;
         }
 
         final boolean ssl = "wss".equalsIgnoreCase(scheme);
@@ -116,25 +118,32 @@ public final class WebSocketClient {
             Channel ch = b.connect(uri.getHost(), port).sync().channel();
             handler.handshakeFuture().sync();
 
-            BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-            while (true) {
-                String msg = console.readLine();
-                if (msg == null) {
-                    break;
-                } else if ("bye".equalsIgnoreCase(msg)) {
-                    ch.writeAndFlush(new CloseWebSocketFrame());
-                    ch.closeFuture().sync();
-                    break;
-                } else if ("ping".equalsIgnoreCase(msg)) {
-                    WebSocketFrame frame = new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[]{8, 1, 8, 1}));
-                    ch.writeAndFlush(frame);
-                } else {
-                    WebSocketFrame frame = new TextWebSocketFrame(msg);
-                    ch.writeAndFlush(frame);
-                }
-            }
+            return ch;
         } finally {
-            group.shutdownGracefully();
+            //group.shutdownGracefully();
         }
     }
+
+    public static void main(String[] args) throws Exception {
+        Channel ch = connect();
+
+        BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
+        while (true) {
+            String msg = console.readLine();
+            if (msg == null) {
+                break;
+            } else if ("bye".equalsIgnoreCase(msg)) {
+                ch.writeAndFlush(new CloseWebSocketFrame());
+                ch.closeFuture().sync();
+                break;
+            } else if ("ping".equalsIgnoreCase(msg)) {
+                WebSocketFrame frame = new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[]{8, 1, 8, 1}));
+                ch.writeAndFlush(frame);
+            } else {
+                WebSocketFrame frame = new TextWebSocketFrame(msg);
+                ch.writeAndFlush(frame);
+            }
+        }
+    }
+
 }
