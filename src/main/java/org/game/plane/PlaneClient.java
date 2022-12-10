@@ -55,7 +55,7 @@ public class PlaneClient extends JFrame {
         //初始化第一架飞机
         planeList.add(plane);
         //调用键盘
-        addKeyListener(new KeyMointer());
+        addKeyListener(new KeyMointer(this));
         //开始
         while (true) {
             repaint();
