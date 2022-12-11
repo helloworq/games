@@ -6,6 +6,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.internal.StringUtil;
 import org.game.plane.PlaneClient;
 import org.game.plane.event.KeyMointer;
+import org.game.plane.log.LogServer;
 import org.game.plane.planes.Plane;
 
 import java.util.List;
@@ -32,9 +33,10 @@ public class ClientMsgCenter {
     private static final Map<String, BiConsumer<Channel, String>> OperationPrefix =
             Map.of(MSG_CHANGE_NAME, (channel, msg) -> channel.writeAndFlush(new TextWebSocketFrame(msg)),
                     OPERATE, (channel, msg) -> channel.writeAndFlush(new TextWebSocketFrame(msg)),
-                    MSG_SYSTEM, (channel, msg) -> System.out.println(ALL + msg.split(OP_SPLIT)[1]),
-                    MSG_USER, (channel, msg) -> System.out.println(msg.split(OP_SPLIT)[2]
-                            + SPEAK + msg.split(OP_SPLIT)[1]),
+                    //MSG_SYSTEM, (channel, msg) -> System.out.println(ALL + msg.split(OP_SPLIT)[1]),
+                    MSG_SYSTEM, (channel, msg) -> LogServer.add(ALL + msg.split(OP_SPLIT)[1]),
+                    //MSG_USER, (channel, msg) -> System.out.println(msg.split(OP_SPLIT)[2] + SPEAK + msg.split(OP_SPLIT)[1]),
+                    MSG_USER, (channel, msg) -> LogServer.add(msg.split(OP_SPLIT)[2] + SPEAK + msg.split(OP_SPLIT)[1]),
                     MSG_OPERATE, (channel, msg) -> receiveOperate(channel, msg),
                     NEW_PLANE, (channel, msg) -> channel.writeAndFlush(new TextWebSocketFrame(msg)),
                     PLANE_LIST_INFO, (channel, msg) -> getPlaneList(channel, msg));
@@ -52,7 +54,6 @@ public class ClientMsgCenter {
     }
 
     public static void sendOperate(Channel channel, String msg) {
-        System.out.println(" -> " + msg);
         msg = OPERATE + OP_SPLIT + msg;
         execIfDec(channel, msg);
     }
@@ -62,6 +63,7 @@ public class ClientMsgCenter {
         execIfDec(channel, msg);
     }
 
+    //将服务器中的飞机列表与本地列表同步
     public static void getPlaneList(Channel channel, String msg) {
         try {
             String[] args = msg.split(OP_SPLIT);
@@ -73,7 +75,6 @@ public class ClientMsgCenter {
     }
 
     public static void execIfDec(Channel channel, String msg) {
-        //System.out.println("发送请求->" + msg);
         if (StringUtil.isNullOrEmpty(msg)) {
             return;
         }

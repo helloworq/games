@@ -6,6 +6,7 @@ import org.game.plane.PlaneClient;
 import org.game.plane.constans.Config;
 import org.game.plane.constans.Direction;
 import org.game.plane.constans.Operation;
+import org.game.plane.log.LogServer;
 import org.game.plane.planes.Plane;
 import org.game.plane.server.client.ClientMsgCenter;
 import org.game.plane.server.client.WebSocketClient;
@@ -25,18 +26,16 @@ public class KeyMointer extends KeyAdapter {
     }
 
     public void keyPressed(KeyEvent e) {
-        //keyPress(e);
         if (e.getKeyCode() == 27) {
             popUpSelection();
         }
-        System.out.println("键入" + e.getKeyChar());
         ClientMsgCenter.sendOperate(channel, Config.KEY_MAP.getOrDefault(e.getKeyChar(), null));
     }
 
     public static void keyPress(String key, String name) {
         Plane plane = PlaneClient.getPlane(name);
         if (Objects.isNull(plane)) {
-            System.out.println("未找到飞机" + name);
+            LogServer.add("未找到飞机" + name);
             return;
         }
         //根据键入的数据改变蛇方向控制符
@@ -89,15 +88,18 @@ public class KeyMointer extends KeyAdapter {
                 System.currentTimeMillis()
         );
         try {
+            //尝试连接服务器
             channel = WebSocketClient.connect();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("连接成功");
+        //更改服务器上本机的名称
         ClientMsgCenter.changeName(channel, inputContent);
-        System.out.println("生成飞机");
+        //根据现有参数生成飞机
         Plane plane = new Plane(PlaneClient.StartPositionX, PlaneClient.StartPositionY, Direction.UP, inputContent);
+        //客户端维护生成的飞机
         PlaneClient.addPlane(plane);
+        //将客户端生成的飞机推送至服务器，并由服务器维护已有的飞机列表，待其他客户端连接时可将状态同步过去
         ClientMsgCenter.createPlane(channel, JSON.toJSONString(plane));
     }
 }

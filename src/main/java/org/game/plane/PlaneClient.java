@@ -4,6 +4,7 @@ import org.game.plane.bullets.Bullet;
 import org.game.plane.constans.Config;
 import org.game.plane.constans.Direction;
 import org.game.plane.event.KeyMointer;
+import org.game.plane.log.LogServer;
 import org.game.plane.planes.Plane;
 
 import javax.swing.*;
@@ -98,6 +99,11 @@ public class PlaneClient extends JFrame {
     private void drawMsg(Graphics g) {
         g.drawString("生命: " + plane.getLive(), 330, 50);
         g.drawString("积分: " + Config.INIT_SCORES, 330, 70);
+        //显示日志
+        String msg = LogServer.get();
+        if (Objects.nonNull(msg)) {
+            g.drawString(msg, 230, 90);
+        }
     }
 
     /**

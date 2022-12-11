@@ -51,20 +51,14 @@ public class ServerMsgCenter {
         if (OperationPrefix.containsKey(op)) {
             OperationPrefix.get(op).accept(channel, msg);
         }
-        try {
-            System.out.println("USER_POOL");
-            USER_POOL.forEach((k, v) -> System.out.print(v + " - "));
-        } catch (Exception e) {
-
-        }
     }
 
+    //维护新进入的客户端的飞机，并且广播通知其他客户端
     public static void createPlane(Channel channel, String msg) {
         try {
             String planeJson = msg.split(OP_SPLIT)[1];
             Plane plane = JSON.parseObject(planeJson, Plane.class);
             PLANE_LIST.add(plane);
-            System.out.println("成功新增飞机");
             notice4System(null, PLANE_LIST_INFO + OP_SPLIT + JSON.toJSONString(PLANE_LIST));
         } catch (Exception e) {
             System.out.println("转换失败");
@@ -80,15 +74,13 @@ public class ServerMsgCenter {
     }
 
     public static void removeUser(Channel channel) {
+        String id = USER_POOL.get(channel);
+        PLANE_LIST.removeIf(e -> e.getId().equals(id));
         USER_POOL.remove(channel);
     }
 
     private static void notice4System(String name, String msg) {
         USER_POOL.forEach((k, v) -> k.writeAndFlush(new TextWebSocketFrame(msg)));
-    }
-
-    private static void notice4Single(Channel channel, String msg) {
-        channel.writeAndFlush(new TextWebSocketFrame(msg));
     }
 
     private static void notice4User(String name, String msg) {
