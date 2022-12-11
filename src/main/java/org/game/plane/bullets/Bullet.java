@@ -11,7 +11,7 @@ public class Bullet extends FlyingObj {
     private int speed;
 
     public Bullet(int startX, int startY, Direction direction) {
-        super(startX, startY, direction, Config.INIT_ALIVE);
+        super(startX, startY, direction, Config.INIT_ALIVE, null);
     }
 
     public void move() {

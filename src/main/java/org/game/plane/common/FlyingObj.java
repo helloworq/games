@@ -14,11 +14,12 @@ public class FlyingObj {
     public FlyingObj() {
     }
 
-    public FlyingObj(int startX, int startY, Direction direction, int live) {
+    public FlyingObj(int startX, int startY, Direction direction, int live, String id) {
         this.positionX = startX;
         this.positionY = startY;
         this.direction = direction;
         this.live = live;
+        this.id = id;
     }
 
     public void moveUp() {

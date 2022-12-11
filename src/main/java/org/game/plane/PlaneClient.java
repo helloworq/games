@@ -12,6 +12,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PlaneClient extends JFrame {
@@ -26,12 +27,12 @@ public class PlaneClient extends JFrame {
     public static int PlaneSize = 20;
     public static int BulletSize = 10;
     //使用链表维护蛇身节点数据
-    public static LinkedList<Plane> planeList = new LinkedList<>();
+    private static final LinkedList<Plane> planeList = new LinkedList<>();
     public static List<Bullet> bulletList = new CopyOnWriteArrayList<>();
     //游戏速度
     public final static int GAME_SPEED = 20;
     //主飞机
-    public static final Plane plane = new Plane(StartPositionX, StartPositionY, Direction.UP);
+    public static final Plane plane = new Plane(StartPositionX, StartPositionY, Direction.UP, "");
 
     public PlaneClient() {
     }
@@ -53,7 +54,7 @@ public class PlaneClient extends JFrame {
         });
 
         //初始化第一架飞机
-        planeList.add(plane);
+//        planeList.add(plane);
         //调用键盘
         addKeyListener(new KeyMointer(this));
         //开始
@@ -61,6 +62,21 @@ public class PlaneClient extends JFrame {
             repaint();
             Thread.sleep(GAME_SPEED);
         }
+    }
+
+    public static void addPlane(Plane plane) {
+        planeList.add(plane);
+    }
+
+    public static void addPlaneList(List<Plane> planes) {
+        if (Objects.nonNull(planes) && !planes.isEmpty()) {
+            planeList.forEach(e -> planes.removeIf(p -> p.getId().equals(e.getId())));
+        }
+        planeList.addAll(planes);
+    }
+
+    public static Plane getPlane(String id) {
+        return planeList.stream().filter(e -> e.getId().equals(id)).findFirst().orElse(null);
     }
 
     private void drawPlane(Graphics g) {
