@@ -8,7 +8,6 @@ import lombok.Data;
  */
 @Data
 public class Message {
-    private String id;
     private String sender;
     private String receiver;
     private boolean send2All;//true -> 不取receiver的值。false -> 则获取receiver
