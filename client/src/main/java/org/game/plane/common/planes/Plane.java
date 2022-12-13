@@ -1,7 +1,7 @@
 package org.game.plane.common.planes;
 
 import lombok.Data;
-import org.game.plane.PlaneClient;
+import org.game.plane.frame.PlaneClient;
 import org.game.plane.common.bullets.Bullet;
 import org.game.plane.common.FlyingObj;
 import org.game.plane.constans.Config;

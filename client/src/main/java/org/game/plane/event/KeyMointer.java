@@ -2,7 +2,7 @@ package org.game.plane.event;
 
 import com.alibaba.fastjson2.JSON;
 import io.netty.channel.Channel;
-import org.game.plane.PlaneClient;
+import org.game.plane.frame.PlaneClient;
 import org.game.plane.constans.Config;
 import org.game.plane.constans.Direction;
 import org.game.plane.constans.Operation;
@@ -18,11 +18,19 @@ import java.util.Objects;
 
 //键盘控制
 public class KeyMointer extends KeyAdapter {
-    private final JFrame jFrame;
+    private static KeyMointer keyMointer;
+    private PlaneClient planeClient;
     private Channel channel;
 
-    public KeyMointer(JFrame frame) {
-        this.jFrame = frame;
+    private KeyMointer() {
+    }
+
+    public synchronized static KeyMointer getInstance(PlaneClient... planeClient) {
+        if (keyMointer == null) {
+            keyMointer = new KeyMointer();
+            keyMointer.planeClient = planeClient[0];
+        }
+        return keyMointer;
     }
 
     public void keyPressed(KeyEvent e) {
@@ -32,7 +40,7 @@ public class KeyMointer extends KeyAdapter {
         ClientMsgCenter.sendOperate(channel, Config.KEY_MAP.getOrDefault(e.getKeyChar(), null));
     }
 
-    public static void keyPress(String key, String name) {
+    public void keyPress(String key, String name) {
         Plane plane = PlaneClient.getPlane(name);
         if (Objects.isNull(plane)) {
             LogServer.add("未找到飞机" + name);
@@ -83,7 +91,7 @@ public class KeyMointer extends KeyAdapter {
         // 显示输入对话框, 返回选择的内容, 点击取消或关闭, 则返回null
         //任何输入都不允许有-号
         String inputContent = JOptionPane.showInputDialog(
-                jFrame,
+                planeClient,
                 "输入你的联机名字:",
                 System.currentTimeMillis()
         );
@@ -96,9 +104,9 @@ public class KeyMointer extends KeyAdapter {
         //更改服务器上本机的名称
         ClientMsgCenter.changeName(channel, inputContent);
         //根据现有参数生成飞机
-        Plane plane = new Plane(PlaneClient.StartPositionX, PlaneClient.StartPositionY, Direction.UP, inputContent);
+        Plane plane = new Plane(planeClient.StartPositionX, planeClient.StartPositionY, Direction.UP, inputContent);
         //客户端维护生成的飞机
-        PlaneClient.addPlane(plane);
+        planeClient.addPlane(plane);
         //将客户端生成的飞机推送至服务器，并由服务器维护已有的飞机列表，待其他客户端连接时可将状态同步过去
         ClientMsgCenter.createPlane(channel, JSON.toJSONString(plane));
     }

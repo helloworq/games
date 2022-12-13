@@ -1,4 +1,4 @@
-package org.game.plane;
+package org.game.plane.frame;
 
 import org.game.plane.common.bullets.Bullet;
 import org.game.plane.constans.Config;
@@ -22,8 +22,8 @@ public class PlaneClient extends JFrame {
     public static final int Y = 400;
     public static final int deviation = 10;
     //蛇的初始坐标
-    public static int StartPositionX = 240;
-    public static int StartPositionY = 340;
+    public int StartPositionX = 240;
+    public int StartPositionY = 340;
     //机身大小
     public static int PlaneSize = 20;
     public static int BulletSize = 10;
@@ -33,19 +33,10 @@ public class PlaneClient extends JFrame {
     //游戏速度
     public final static int GAME_SPEED = 20;
     //主飞机
-    public static final Plane plane = new Plane(StartPositionX, StartPositionY, Direction.UP, "");
+    //public static final Plane plane = new Plane(StartPositionX, StartPositionY, Direction.UP, "");
 
     public PlaneClient() {
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-        PlaneClient planeClient = new PlaneClient();
-        planeClient.lanch();
-    }
-
-
-    public void lanch() throws InterruptedException {
-        this.setBounds(200, 100, X, Y); //设置窗体大小和位置
+        this.setBounds(0, 0, X, Y); //设置窗体大小和位置
         this.setVisible(true); //使用该属性才能显示窗体
         //实现程序运行关闭的功能
         this.addWindowListener(new WindowAdapter() {
@@ -53,19 +44,19 @@ public class PlaneClient extends JFrame {
                 System.exit(-1);
             }
         });
-
-        //初始化第一架飞机
-//        planeList.add(plane);
         //调用键盘
-        addKeyListener(new KeyMointer(this));
+        addKeyListener(KeyMointer.getInstance(this));
+    }
+
+    public void lanch() throws InterruptedException {
         //开始
         while (true) {
-            repaint();
             Thread.sleep(GAME_SPEED);
+            repaint();
         }
     }
 
-    public static void addPlane(Plane plane) {
+    public void addPlane(Plane plane) {
         planeList.add(plane);
     }
 
@@ -97,8 +88,9 @@ public class PlaneClient extends JFrame {
     }
 
     private void drawMsg(Graphics g) {
-        g.drawString("生命: " + plane.getLive(), 330, 50);
+        g.drawString("生命: " + 1, 330, 50);
         g.drawString("积分: " + Config.INIT_SCORES, 330, 70);
+        g.drawString(" ", 330, 90);
         //显示日志
         String msg = LogServer.get();
         if (Objects.nonNull(msg)) {
@@ -120,9 +112,18 @@ public class PlaneClient extends JFrame {
     @Override
     public void paint(Graphics g) {
         //逐个读取链表中的节点数据，循环打印节点
-        g.clearRect(0, 0, 400, 400);//清屏
+        super.paint(g);
         drawPlane(g);
         drawBullets(g);
         drawMsg(g);
+//        super.paint(g);
+//        Image image = createImage(400, 400);
+//
+//        Graphics g2 = image.getGraphics();
+//        drawPlane(g2);
+//        drawBullets(g2);
+//        drawMsg(g2);
+//
+//        g.drawImage(image, 0, 0, null);
     }
 }

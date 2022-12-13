@@ -4,7 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.internal.StringUtil;
-import org.game.plane.PlaneClient;
+import org.game.plane.frame.PlaneClient;
 import org.game.plane.event.KeyMointer;
 import org.game.plane.log.LogServer;
 import org.game.plane.common.planes.Plane;
@@ -49,7 +49,7 @@ public class ClientMsgCenter {
         String[] args = msg.split(OP_SPLIT);
         String id = args[2];
         String order = args[1];
-        KeyMointer.keyPress(order, id);
+        KeyMointer.getInstance().keyPress(order, id);
     }
 
     public static void sendOperate(Channel channel, String msg) {
