@@ -6,6 +6,7 @@ import org.game.plane.constans.Direction;
 import org.game.plane.event.KeyMointer;
 import org.game.plane.log.LogServer;
 import org.game.plane.common.planes.Plane;
+import org.game.plane.run.Run;
 
 import javax.swing.*;
 import java.awt.*;
@@ -87,6 +88,32 @@ public class PlaneClient extends JFrame {
         }
     }
 
+    private void drawCircleBullte(Graphics g) {
+        if (Objects.nonNull(planeList) && !planeList.isEmpty()) {
+            Plane plane = planeList.get(0);
+            Run.Position position = getCirclePosition();
+            g.drawString("环绕", plane.getPositionX() + position.getX(), plane.getPositionY() + position.getY());
+        }
+    }
+
+    double angle = 0;
+
+    public Run.Position getCirclePosition() {
+        //根据直径计算坐标(加上距圆心偏移量即为坐标)
+        double length = 100.0;
+        int y = (int) (Math.sin(angle * Math.PI) * length);
+        int x = (int) (Math.cos(angle * Math.PI) * length);
+        Run.Position position = new Run.Position(x, y);
+
+        System.out.println("角度: " + angle + " X坐标: " + x + " Y坐标: " + y + " 计算和" + Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
+        if (angle < 2) {
+            angle = angle + 1.0 / 64.0;
+        } else {
+            angle = 0.0;
+        }
+        return position;
+    }
+
     private void drawMsg(Graphics g) {
         g.drawString("生命: " + 1, 330, 50);
         g.drawString("积分: " + Config.INIT_SCORES, 330, 70);
@@ -116,6 +143,7 @@ public class PlaneClient extends JFrame {
         drawPlane(g);
         drawBullets(g);
         drawMsg(g);
+        drawCircleBullte(g);
 //        super.paint(g);
 //        Image image = createImage(400, 400);
 //
