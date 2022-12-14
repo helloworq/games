@@ -23,8 +23,8 @@ public class PlaneClient extends JFrame {
     public static final int Y = 400;
     public static final int deviation = 10;
     //蛇的初始坐标
-    public int StartPositionX = 240;
-    public int StartPositionY = 340;
+    public int StartPositionX = 200;
+    public int StartPositionY = 200;
     //机身大小
     public static int PlaneSize = 20;
     public static int BulletSize = 10;
@@ -105,12 +105,7 @@ public class PlaneClient extends JFrame {
         int x = (int) (Math.cos(angle * Math.PI) * length);
         Run.Position position = new Run.Position(x, y);
 
-        System.out.println("角度: " + angle + " X坐标: " + x + " Y坐标: " + y + " 计算和" + Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
-        if (angle < 2) {
-            angle = angle + 1.0 / 64.0;
-        } else {
-            angle = 0.0;
-        }
+        angle = angle < 2 ? (angle + 1.0 / 128.0) : 0.0;
         return position;
     }
 

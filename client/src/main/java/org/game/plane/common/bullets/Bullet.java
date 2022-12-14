@@ -17,16 +17,16 @@ public class Bullet extends FlyingObj {
         Direction direction = getDirection();
         switch (direction) {
             case UP:
-                setPositionY(getPositionY() - 10);
+                setPositionY(getPositionY() - 5);
                 break;
             case DOWN:
-                setPositionY(getPositionY() + 10);
+                setPositionY(getPositionY() + 5);
                 break;
             case LEFT:
-                setPositionX(getPositionX() - 10);
+                setPositionX(getPositionX() - 5);
                 break;
             case RIGHT:
-                setPositionX(getPositionX() + 10);
+                setPositionX(getPositionX() + 5);
                 break;
         }
     }
