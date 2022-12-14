@@ -14,7 +14,8 @@ public class Shape {
 
     private static int x = 200;
     private static int y = 200;
-    private static int rotate = 0;
+    private static int rotate = -60;
+    private static double planeSpeed = 5.0;
 
     @Getter
     @AllArgsConstructor
@@ -33,22 +34,16 @@ public class Shape {
                 public void keyPressed(KeyEvent e) {
                     switch (e.getKeyChar()) {
                         case 'w':
-                            y -= 20;
+                            planeMove(-1, 1);
                             break;
                         case 'a':
-                            x -= 20;
+                            rotate += 20;
                             break;
                         case 's':
-                            y += 20;
+                            planeMove(1, -1);
                             break;
                         case 'd':
-                            x += 20;
-                            break;
-                        case 'j':
                             rotate -= 20;
-                            break;
-                        case 'k':
-                            rotate += 20;
                             break;
                     }
 
@@ -66,6 +61,24 @@ public class Shape {
                 Thread.sleep(20);
                 repaint();
             }
+        }
+
+        //根据飞机倾角计算运动位置
+        private void planeMove(int xr, int yr) {
+            int y1 = (int) (Math.sin(Math.PI * 2.0 * (rotate + 330.0) / 360.0) * planeSpeed);
+            int x1 = (int) (Math.cos(Math.PI * 2.0 * (rotate + 330.0) / 360.0) * planeSpeed);
+            x1 = xr * x1;
+            y1 = yr * y1;
+
+
+            System.out.println("y1 = " + y1
+                    + " x1 = " + x1
+                    + " 倾角 = " + (rotate + 330)
+                    + " sin = " + Math.sin(Math.PI * 2.0 * (rotate + 330.0) / 360.0)
+                    + " cos = " + Math.cos(Math.PI * 2.0 * (rotate + 330.0) / 360.0)
+            );
+            y += y1;
+            x += x1;
         }
 
         @Override
@@ -88,7 +101,7 @@ public class Shape {
             //g.drawRect(200, 200, 20, 20);
             //g.drawOval(200, 200, 20, 20);
             //g.drawArc(200, 200, 20, 20, 225, 315);
-            g.fillArc(x, y, 20, 20, rotate - 30, -60);
+            g.fillArc(x, y, 50, 50, rotate, -60);
 
             g.drawOval(x + position.x, y + position.y, 20, 20);
             g.drawRect(x + position2.x, y + position2.y, 20, 20);
