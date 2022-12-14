@@ -9,13 +9,25 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Fly {
-
+    private static final int PRESSED = 1;
+    private static final int RELEASED = 0;
     private static int x = 200;
     private static int y = 200;
     private static int rotate = -60;
     private static double planeSpeed = 5.0;
+    //将所有按键事件通过标志位处理
+    private static final Map<Character, Integer> keyMap = new ConcurrentHashMap<>();
+
+    static {
+        keyMap.put('w', RELEASED);
+        keyMap.put('a', RELEASED);
+        keyMap.put('s', RELEASED);
+        keyMap.put('d', RELEASED);
+    }
 
     @Getter
     @AllArgsConstructor
@@ -34,19 +46,36 @@ public class Fly {
                 public void keyPressed(KeyEvent e) {
                     switch (e.getKeyChar()) {
                         case 'w':
-                            planeMove(-1, 1);
+                            keyMap.put('w', PRESSED);
                             break;
                         case 'a':
-                            rotate += 20;
+                            keyMap.put('a', PRESSED);
                             break;
                         case 's':
-                            planeMove(1, -1);
+                            keyMap.put('s', PRESSED);
                             break;
                         case 'd':
-                            rotate -= 20;
+                            keyMap.put('d', PRESSED);
                             break;
                     }
+                }
 
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    switch (e.getKeyChar()) {
+                        case 'w':
+                            keyMap.put('w', RELEASED);
+                            break;
+                        case 'a':
+                            keyMap.put('a', RELEASED);
+                            break;
+                        case 's':
+                            keyMap.put('s', RELEASED);
+                            break;
+                        case 'd':
+                            keyMap.put('d', RELEASED);
+                            break;
+                    }
                 }
             });
             this.addWindowListener(new WindowAdapter() {
@@ -59,7 +88,23 @@ public class Fly {
         public void lanch() throws InterruptedException {
             while (true) {
                 Thread.sleep(20);
+                handleKeyMap();
                 repaint();
+            }
+        }
+
+        private void handleKeyMap() {
+            if (keyMap.get('w') == PRESSED) {
+                planeMove(-1, 1);
+            }
+            if (keyMap.get('a') == PRESSED) {
+                rotate += 5;
+            }
+            if (keyMap.get('s') == PRESSED) {
+                planeMove(1, -1);
+            }
+            if (keyMap.get('d') == PRESSED) {
+                rotate -= 5;
             }
         }
 
@@ -67,16 +112,16 @@ public class Fly {
         private void planeMove(int xr, int yr) {
             int y1 = (int) (Math.sin(Math.PI * 2.0 * (rotate + 330.0) / 360.0) * planeSpeed);
             int x1 = (int) (Math.cos(Math.PI * 2.0 * (rotate + 330.0) / 360.0) * planeSpeed);
-            x1 = xr * x1;
-            y1 = yr * y1;
+            x1 = xr * x1;//前进时置为相反数
+            y1 = yr * y1;//后退时置为相反数
 
 
-            System.out.println("y1 = " + y1
-                    + " x1 = " + x1
-                    + " 倾角 = " + (rotate + 330)
-                    + " sin = " + Math.sin(Math.PI * 2.0 * (rotate + 330.0) / 360.0)
-                    + " cos = " + Math.cos(Math.PI * 2.0 * (rotate + 330.0) / 360.0)
-            );
+//            System.out.println("y1 = " + y1
+//                    + " x1 = " + x1
+//                    + " 倾角 = " + (rotate + 330)
+//                    + " sin = " + Math.sin(Math.PI * 2.0 * (rotate + 330.0) / 360.0)
+//                    + " cos = " + Math.cos(Math.PI * 2.0 * (rotate + 330.0) / 360.0)
+//            );
             y += y1;
             x += x1;
         }
