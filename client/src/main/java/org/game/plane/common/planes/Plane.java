@@ -17,16 +17,18 @@ public class Plane extends FlyingObj {
     }
 
     public Plane(int startX, int startY, Direction direction, String id) {
-        super(startX, startY, direction, Config.INIT_ALIVE, id, 2);
+        super(startX, startY, direction, Config.INIT_ALIVE, id, 1);
     }
 
     public void shoot() {
-        Bullet bullet = weapon.getBullet(getPositionX(), getPositionY(), getDirection());
+        Bullet bullet = weapon.getBullet(getPositionX()+45, getPositionY()+30, getDirection());
+        bullet.setAhead(isAhead());
+        bullet.setRotate(getRotate());
         PlaneClient.bulletList.add(bullet);
     }
 
     public void attack() {
-        Bullet bullet = weapon.getBullet(getPositionX(), getPositionY(), getDirection());
+        Bullet bullet = weapon.getBullet(getPositionX(), getPositionY(), getRotate());
         PlaneClient.bulletList.add(bullet);
     }
 }

@@ -13,6 +13,10 @@ public class Bullet extends FlyingObj {
         super(startX, startY, direction, Config.INIT_ALIVE, null, imageId);
     }
 
+    public Bullet(int startX, int startY, int rorate, Integer imageId) {
+        super(startX, startY, rorate, Config.INIT_ALIVE, null, imageId);
+    }
+
     public void move() {
         Direction direction = getDirection();
         switch (direction) {

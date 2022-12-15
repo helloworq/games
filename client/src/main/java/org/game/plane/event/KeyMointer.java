@@ -35,6 +35,8 @@ public class KeyMointer extends KeyAdapter {
         keyMap.put('a', RELEASED);
         keyMap.put('s', RELEASED);
         keyMap.put('d', RELEASED);
+        keyMap.put('j', RELEASED);
+        keyMap.put('k', RELEASED);
     }
 
     private KeyMointer() {
@@ -92,6 +94,12 @@ public class KeyMointer extends KeyAdapter {
             case "d":
                 keyMap.put('d', PRESSED);
                 break;
+            case "j":
+                keyMap.put('j', PRESSED);
+                break;
+            case "k":
+                keyMap.put('k', PRESSED);
+                break;
         }
     }
 
@@ -115,16 +123,11 @@ public class KeyMointer extends KeyAdapter {
             case "d":
                 keyMap.put('d', RELEASED);
                 break;
-        }
-    }
-
-    private static void handleShoot(Operation operation, Plane plane) {
-        switch (operation) {
-            case SHOOT:
-                plane.shoot();
+            case "j":
+                keyMap.put('j', RELEASED);
                 break;
-            case ATTACK:
-                plane.attack();
+            case "k":
+                keyMap.put('k', RELEASED);
                 break;
         }
     }

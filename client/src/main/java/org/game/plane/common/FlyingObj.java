@@ -13,8 +13,23 @@ public class FlyingObj {
     private Integer imageId;
     private int rotate = 0;//角度
     private static double planeSpeed = 5.0;
+    private boolean ahead = true;
 
     public FlyingObj() {
+    }
+
+    public FlyingObj(int startX
+            , int startY
+            , int direction
+            , int live
+            , String id
+            , Integer imageId) {
+        this.positionX = startX;
+        this.positionY = startY;
+        this.rotate = rotate;
+        this.live = live;
+        this.id = id;
+        this.imageId = imageId;
     }
 
     public FlyingObj(int startX
@@ -32,6 +47,16 @@ public class FlyingObj {
     }
 
     //根据飞机倾角计算运动位置
+    public void bulletMove() {
+        int y1 = (int) (Math.sin(Math.toRadians(rotate)) * planeSpeed);
+        int x1 = (int) (Math.cos(Math.toRadians(rotate)) * planeSpeed);
+        y1 = -y1;
+
+        setPositionX(getPositionX() + x1);
+        setPositionY(getPositionY() + y1);
+    }
+
+    //根据飞机倾角计算运动位置
     public void planeMove(int xr, int yr) {
         int y1 = (int) (Math.sin(Math.toRadians(rotate)) * planeSpeed);
         int x1 = (int) (Math.cos(Math.toRadians(rotate)) * planeSpeed);
@@ -40,21 +65,5 @@ public class FlyingObj {
 
         setPositionX(getPositionX() + x1);
         setPositionY(getPositionY() + y1);
-    }
-
-    public void moveUp() {
-        setPositionY(getPositionY() - 10);
-    }
-
-    public void moveDown() {
-        setPositionY(getPositionY() + 10);
-    }
-
-    public void moveLeft() {
-        setPositionX(getPositionX() - 10);
-    }
-
-    public void moveRight() {
-        setPositionX(getPositionX() + 10);
     }
 }

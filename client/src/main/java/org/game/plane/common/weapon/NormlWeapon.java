@@ -10,4 +10,8 @@ public class NormlWeapon extends Weapon {
     public Bullet getBullet(int startX, int startY, Direction direction) {
         return new Bullet(startX, startY, direction, 5);
     }
+
+    public Bullet getBullet(int startX, int startY, int rotate) {
+        return new Bullet(startX, startY, rotate, 5);
+    }
 }

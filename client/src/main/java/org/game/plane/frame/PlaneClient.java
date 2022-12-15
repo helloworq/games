@@ -92,9 +92,10 @@ public class PlaneClient extends Frame {
     private void drawBullets(Graphics g) {
         for (Bullet bullet : bulletList) {
             recyclingBullets();
-            bullet.move();
-            g.setColor(Color.black);
-            g.fillRect(bullet.getPositionX(), bullet.getPositionY(), PlaneSize, PlaneSize);
+            bullet.bulletMove();
+
+            BufferedImage image = ImageUtil.rotateImage(GameSource.get(bullet.getImageId()), bullet.getRotate());
+            g.drawImage(image, bullet.getPositionX(), bullet.getPositionY(), null);
         }
     }
 
@@ -128,9 +129,15 @@ public class PlaneClient extends Frame {
         }
         if (KeyMointer.keyMap.get('s') == PRESSED) {
             plane.planeMove(-1, 1);
+            plane.setAhead(false);
         }
         if (KeyMointer.keyMap.get('d') == PRESSED) {
             plane.setRotate(plane.getRotate() - 5);
+        }
+        if (KeyMointer.keyMap.get('j') == PRESSED) {
+            plane.shoot();
+        }
+        if (KeyMointer.keyMap.get('k') == PRESSED) {
         }
     }
 
