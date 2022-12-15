@@ -1,106 +1,100 @@
 package org.game.plane.run;
 
-import javax.swing.*;
+import org.game.plane.ImageUtil;
+
+import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
-public class DoubleBuff extends JPanel {
-    Image doubleBuffer;
-    int clickCount;
-    int i = 1;
-    private static final Dimension pSize = new Dimension(400, 400);
+public class DoubleBuff extends Frame {
+    private static final int WIDTH = 800;//窗口宽
+    private static final int HEIGHT = 600;//窗口高
+    private int x = 50;//圆的横坐标
+    private int y = 50;//圆的纵坐标
+    private static int rotate = 0;//角度
 
-    public void paint(Graphics g) {
-        if (doubleBuffer == null) {
-            doubleBuffer = createImage(this.getWidth(), this.getHeight());
+    //缓存图片
+    private static BufferedImage plane = null;
+
+    static {
+        try {
+            plane = ImageIO.read(new File("D:\\DerbyCode\\games\\client\\src\\main\\resources\\images\\plane\\复古飞机.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        g.drawImage(doubleBuffer, 0, 0, null);
-        drawRect(g);
     }
 
-    public Dimension getPreferredSize() {
-        return pSize;
+    public void launchFrame() {
+        setSize(WIDTH, HEIGHT);
+        setTitle("DoubleBufferTest");
+
+        setLocationRelativeTo(null);
+
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
+        setResizable(false);//设置不可改变窗口大小
+        this.setBackground(Color.white);
+        setVisible(true);
+        while (true) {
+            repaint();//重画
+            try {
+                Thread.sleep(10);//每隔50ms重画一次
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public void changeInternalStatus() {
-        Graphics g2 = doubleBuffer.getGraphics();
+    /*
+     * 重写update方法，实现双缓冲，以消除闪烁
+     */
+    private static Image offScreenImage = null;//用于实现双缓冲
 
-        g2.drawLine(0, clickCount, doubleBuffer.getWidth(null), clickCount);
-        clickCount += 5;
-        g2.dispose();
-        repaint();
+    @Override
+    public void update(Graphics g) {
+        if (offScreenImage == null) {
+            offScreenImage = this.createImage(WIDTH, HEIGHT);//创建一张大小和窗口大小一样的虚拟图片
+        }
+        Graphics gOffScreen = offScreenImage.getGraphics();//获得画笔
+        //刷新背景，否则物体运动痕迹会保留
+        Color c = gOffScreen.getColor();
+        gOffScreen.setColor(Color.white);
+
+        //清屏
+        gOffScreen.fillRect(0, 0, WIDTH, HEIGHT);
+        drawRect(gOffScreen);
+
+        gOffScreen.setColor(c);
+        paint(gOffScreen);//画到虚拟图片上
+        g.drawImage(offScreenImage, 0, 0, null);//把图片画到屏幕上
     }
 
-    double angle = 0;
 
     private void drawRect(Graphics g) {
-        Run.Position position = getCirclePosition(0);
-        Run.Position position2 = getCirclePosition(1.0 / 3.0);
-        Run.Position position3 = getCirclePosition(2.0 / 3.0);
-        Run.Position position4 = getCirclePosition(3.0 / 3.0);
-        Run.Position position5 = getCirclePosition(4.0 / 3.0);
-        Run.Position position6 = getCirclePosition(5.0 / 3.0);
-        Run.Position position7 = getCirclePosition(6.0 / 3.0);
-
-        g.drawRect(200, 200, 20, 20);
-
-        g.drawRect(200 + position.x, 200 + position.y, 20, 20);
-        g.drawRect(200 + position2.x, 200 + position2.y, 20, 20);
-        g.drawRect(200 + position3.x, 200 + position3.y, 20, 20);
-        g.drawRect(200 + position4.x, 200 + position4.y, 20, 20);
-        g.drawRect(200 + position5.x, 200 + position5.y, 20, 20);
-        g.drawRect(200 + position6.x, 200 + position6.y, 20, 20);
-        g.drawRect(200 + position7.x, 200 + position7.y, 20, 20);
-
-        angle = angle < 2 ? (angle + 1.0 / 128.0) : 0.0;
+        BufferedImage image = ImageUtil.rotateImage(plane, rotate);
+        g.drawImage(image, x, y, null);
     }
 
-    public Run.Position getCirclePosition(double offset) {
-        //根据直径计算坐标(加上距圆心偏移量即为坐标)
-        double curAngle = offset + angle;
-
-        double length = 100.0;
-        int y = (int) (Math.sin(curAngle * Math.PI) * length);
-        int x = (int) (Math.cos(curAngle * Math.PI) * length);
-
-        if (i==1){
-            System.out.println(i);
-            i++;
-            new Thread(() -> {
-                while (true) {
-                    try {
-                        Thread.sleep(5);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    repaint();
-                }
-            }).start();
-        }
-        //System.out.println("角度: " + angle + " X坐标: " + x + " Y坐标: " + y + " 计算和" + Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
-        return new Run.Position(x, y);
+    @Override
+    public void paint(Graphics g) {
+        Color c = g.getColor();//取出原前景色
+        g.setColor(Color.RED);//设置前景色
+        g.setColor(c);//恢复原前景色
+        y += 1;
     }
-
 
 
     public static void main(String[] args) {
-        final DoubleBuff p = new DoubleBuff();
-        JFrame f = new JFrame();
-        JMenuBar mb = new JMenuBar();
-        JMenu m = new JMenu("Test");
-        mb.add(m);
-        JMenuItem mi = new JMenuItem("Draw in off screen");
-        m.add(mi);
-        mi.addActionListener(new ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                p.changeInternalStatus();
-            }
-        });
-        f.setJMenuBar(mb);
-        f.setContentPane(p);
-        f.pack();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        f.show();
+        DoubleBuff tc = new DoubleBuff();
+        tc.launchFrame();
     }
 }

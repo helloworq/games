@@ -2,6 +2,7 @@ package org.game.plane.run;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.game.plane.ImageUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -48,9 +49,16 @@ public class FlyWithImage {
         int y;
     }
 
-    static class MyPanel extends JFrame {
+    static class MyPanel extends Frame {
+        private static final int WIDTH = 800;//窗口宽
+        private static final int HEIGHT = 600;//窗口高
+
         public MyPanel() {
-            this.setBounds(0, 0, 400, 400); //设置窗体大小和位置
+
+        }
+
+        public void lanch() throws InterruptedException {
+            this.setBounds(0, 0, WIDTH, HEIGHT); //设置窗体大小和位置
             this.setVisible(true); //使用该属性才能显示窗体
             //实现程序运行关闭的功能
             addKeyListener(new KeyAdapter() {
@@ -95,14 +103,17 @@ public class FlyWithImage {
                     System.exit(-1);
                 }
             });
-        }
-
-        public void lanch() throws InterruptedException {
-            while (true) {
-                Thread.sleep(20);
-                handleKeyMap();
-                repaint();
-            }
+            new Thread(() -> {
+                while (true) {
+                    repaint();//重画
+                    handleKeyMap();
+                    try {
+                        Thread.sleep(10);//每隔50ms重画一次
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
         }
 
         private void handleKeyMap() {
@@ -131,46 +142,34 @@ public class FlyWithImage {
             x += x1;
         }
 
-        @Override
-        public void paint(Graphics g) {
-            //逐个读取链表中的节点数据，循环打印节点
-            super.paint(g);
-            drawRect(g);
-        }
+        private Image offScreenImage = null;//用于实现双缓冲
 
-        double angle = 0;
+        @Override
+        public void update(Graphics g) {
+            if (offScreenImage == null) {
+                offScreenImage = this.createImage(WIDTH, HEIGHT);//创建一张大小和窗口大小一样的虚拟图片
+            }
+            Graphics gOffScreen = offScreenImage.getGraphics();//获得画笔
+            //刷新背景，否则物体运动痕迹会保留
+            Color c = gOffScreen.getColor();
+            gOffScreen.setColor(Color.white);
+
+            gOffScreen.fillRect(0, 0, WIDTH, HEIGHT);
+            drawRect(gOffScreen);
+
+            gOffScreen.setColor(c);
+            paint(gOffScreen);//画到虚拟图片上
+            g.drawImage(offScreenImage, 0, 0, null);//把图片画到屏幕上
+        }
 
         private void drawRect(Graphics g) {
-            //g.fillArc(x, y, 50, 50, rotate, -60);
-            BufferedImage image = rotateImage(plane, rotate);
-
+            BufferedImage image = ImageUtil.rotateImage(plane, rotate);
             g.drawImage(image, x, y, null);
-            angle = angle < 2 ? (angle + 1.0 / 256.0) : 0.0;
         }
-    }
-
-    private static BufferedImage rotateImage( BufferedImage bufferedimage,
-                                             int degree) {
-        int w = bufferedimage.getWidth();// 得到图片宽度。
-        int h = bufferedimage.getHeight();// 得到图片高度。
-        w = Math.max(w, h);
-        h = w;//强制长宽一致
-
-        int type = bufferedimage.getColorModel().getTransparency();// 得到图片透明度。
-        BufferedImage img;// 空的图片。
-        Graphics2D graphics2d;// 空的画笔。
-        (graphics2d = (img = new BufferedImage(w, h, type))
-                .createGraphics()).setRenderingHint(
-                RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-
-        graphics2d.rotate(Math.toRadians(-degree), w / 2.0, h / 2.0);// 旋转，degree是整型，角度数，比如垂直90度。180°角度 = Π弧度
-        graphics2d.drawImage(bufferedimage, 0, 0, null);// 从bufferedimagecopy图片至img，0,0是img的坐标。
-        graphics2d.dispose();
-        return img;// 返回复制好的图片，原图片依然没有变，没有旋转，下次还可以使用。
     }
 
     public static void main(String[] args) throws InterruptedException {
+        //!!必须继承Frame！！！！
         MyPanel panel = new MyPanel();
         panel.lanch();
     }
