@@ -16,13 +16,12 @@ public class Plane extends FlyingObj {
     public Plane() {
     }
 
-    public Plane(int startX, int startY, Direction direction, String id) {
-        super(startX, startY, direction, Config.INIT_ALIVE, id, 1);
+    public Plane(int startX, int startY, String id) {
+        super(startX, startY, Config.INIT_ALIVE, id, 1);
     }
 
     public void shoot() {
-        Bullet bullet = weapon.getBullet(getPositionX()+45, getPositionY()+30, getDirection());
-        bullet.setAhead(isAhead());
+        Bullet bullet = weapon.getBullet(getPositionX()+45, getPositionY()+30);
         bullet.setRotate(getRotate());
         PlaneClient.bulletList.add(bullet);
     }

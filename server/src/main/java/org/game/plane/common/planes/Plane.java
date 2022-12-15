@@ -10,11 +10,4 @@ import org.game.plane.constans.Direction;
 @Data
 public class Plane extends FlyingObj {
     private Weapon weapon = new Weapon();
-
-    public Plane() {
-    }
-
-    public Plane(int startX, int startY, Direction direction, String id) {
-        super(startX, startY, direction, Config.INIT_ALIVE, id);
-    }
 }

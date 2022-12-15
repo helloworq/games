@@ -81,7 +81,7 @@ public class PlaneClient extends JFrame {
     private void drawBullets(Graphics g) {
         for (Bullet bullet : bulletList) {
             recyclingBullets();
-            bullet.move();
+            //bullet.move();
             g.setColor(Color.black);
             g.fillRect(bullet.getPositionX(), bullet.getPositionY(), PlaneSize, PlaneSize);
         }

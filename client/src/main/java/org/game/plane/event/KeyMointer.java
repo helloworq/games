@@ -28,18 +28,22 @@ public class KeyMointer extends KeyAdapter {
     private Channel channel;
     private static int rotate = 0;//角度
     //将所有按键事件通过标志位处理
-    public static final Map<Character, Integer> keyMap = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<String, Integer> keyMap = new ConcurrentHashMap<>();
 
     static {
-        keyMap.put('w', RELEASED);
-        keyMap.put('a', RELEASED);
-        keyMap.put('s', RELEASED);
-        keyMap.put('d', RELEASED);
-        keyMap.put('j', RELEASED);
-        keyMap.put('k', RELEASED);
+        keyMap.put("w", RELEASED);
+        keyMap.put("a", RELEASED);
+        keyMap.put("s", RELEASED);
+        keyMap.put("d", RELEASED);
+        keyMap.put("j", RELEASED);
+        keyMap.put("k", RELEASED);
     }
 
     private KeyMointer() {
+    }
+
+    public static Integer getKeyMap(String key) {
+        return keyMap.getOrDefault(key, RELEASED);
     }
 
     public synchronized static KeyMointer getInstance(PlaneClient... planeClient) {
@@ -83,22 +87,22 @@ public class KeyMointer extends KeyAdapter {
         //根据键入的数据改变蛇方向控制符
         switch (key) {
             case "w":
-                keyMap.put('w', PRESSED);
+                keyMap.put("w" + name, PRESSED);
                 break;
             case "a":
-                keyMap.put('a', PRESSED);
+                keyMap.put("a" + name, PRESSED);
                 break;
             case "s":
-                keyMap.put('s', PRESSED);
+                keyMap.put("s" + name, PRESSED);
                 break;
             case "d":
-                keyMap.put('d', PRESSED);
+                keyMap.put("d" + name, PRESSED);
                 break;
             case "j":
-                keyMap.put('j', PRESSED);
+                keyMap.put("j" + name, PRESSED);
                 break;
             case "k":
-                keyMap.put('k', PRESSED);
+                keyMap.put("k" + name, PRESSED);
                 break;
         }
     }
@@ -112,22 +116,22 @@ public class KeyMointer extends KeyAdapter {
         //根据键入的数据改变蛇方向控制符
         switch (key) {
             case "w":
-                keyMap.put('w', RELEASED);
+                keyMap.remove("w" + name);
                 break;
             case "a":
-                keyMap.put('a', RELEASED);
+                keyMap.remove("a" + name);
                 break;
             case "s":
-                keyMap.put('s', RELEASED);
+                keyMap.remove("s" + name);
                 break;
             case "d":
-                keyMap.put('d', RELEASED);
+                keyMap.remove("d" + name);
                 break;
             case "j":
-                keyMap.put('j', RELEASED);
+                keyMap.remove("j" + name);
                 break;
             case "k":
-                keyMap.put('k', RELEASED);
+                keyMap.remove("k" + name);
                 break;
         }
     }
@@ -149,7 +153,7 @@ public class KeyMointer extends KeyAdapter {
         //更改服务器上本机的名称
         ClientMsgCenter.changeName(channel, inputContent);
         //根据现有参数生成飞机
-        Plane plane = new Plane(planeClient.StartPositionX, planeClient.StartPositionY, Direction.UP, inputContent);
+        Plane plane = new Plane(planeClient.StartPositionX, planeClient.StartPositionY, inputContent);
         //客户端维护生成的飞机
         planeClient.addPlane(plane);
         //将客户端生成的飞机推送至服务器，并由服务器维护已有的飞机列表，待其他客户端连接时可将状态同步过去

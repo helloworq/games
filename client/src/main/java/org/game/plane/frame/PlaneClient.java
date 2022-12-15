@@ -32,7 +32,7 @@ public class PlaneClient extends Frame {
     public static int PlaneSize = 20;
     public static int BulletSize = 10;
     //使用链表维护蛇身节点数据
-    private static final LinkedList<Plane> planeList = new LinkedList<>();
+    private static final List<Plane> planeList = new CopyOnWriteArrayList<>();
     public static List<Bullet> bulletList = new CopyOnWriteArrayList<>();
     //游戏速度
     public final static int GAME_SPEED = 20;
@@ -84,8 +84,6 @@ public class PlaneClient extends Frame {
             handleMove(plane);
             BufferedImage image = ImageUtil.rotateImage(GameSource.get(plane.getImageId()), plane.getRotate());
             g.drawImage(image, plane.getPositionX(), plane.getPositionY(), null);
-//            g.setColor(Color.gray);
-//            g.fillRect(plane.getPositionX(), plane.getPositionY(), PlaneSize, PlaneSize);
         }
     }
 
@@ -121,23 +119,22 @@ public class PlaneClient extends Frame {
     }
 
     private void handleMove(Plane plane) {
-        if (KeyMointer.keyMap.get('w') == PRESSED) {
+        if (KeyMointer.getKeyMap("w" + plane.getId()) == PRESSED) {
             plane.planeMove(1, -1);
         }
-        if (KeyMointer.keyMap.get('a') == PRESSED) {
+        if (KeyMointer.getKeyMap("a" + plane.getId()) == PRESSED) {
             plane.setRotate(plane.getRotate() + 5);
         }
-        if (KeyMointer.keyMap.get('s') == PRESSED) {
+        if (KeyMointer.getKeyMap("s" + plane.getId()) == PRESSED) {
             plane.planeMove(-1, 1);
-            plane.setAhead(false);
         }
-        if (KeyMointer.keyMap.get('d') == PRESSED) {
+        if (KeyMointer.getKeyMap("d" + plane.getId()) == PRESSED) {
             plane.setRotate(plane.getRotate() - 5);
         }
-        if (KeyMointer.keyMap.get('j') == PRESSED) {
+        if (KeyMointer.getKeyMap("j" + plane.getId()) == PRESSED) {
             plane.shoot();
         }
-        if (KeyMointer.keyMap.get('k') == PRESSED) {
+        if (KeyMointer.getKeyMap("k" + plane.getId()) == PRESSED) {
         }
     }
 

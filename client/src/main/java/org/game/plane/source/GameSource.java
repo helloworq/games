@@ -18,12 +18,17 @@ public class GameSource {
         IMAGE_MAP.put(5, Objects.requireNonNull(readImage("bullet/蓝色火球子弹" + IMAGE_PREFIX)));
     }
 
-    public static int get(){
+    public static int get() {
         return 111;
     }
 
     public static BufferedImage get(Integer id) {
-        return IMAGE_MAP.get(id);
+        try {
+            return IMAGE_MAP.get(id);
+        } catch (Exception e) {
+            System.out.println(id);
+        }
+        return null;
     }
 
     private static BufferedImage readImage(String filename) {

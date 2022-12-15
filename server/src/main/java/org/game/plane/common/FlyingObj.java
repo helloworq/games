@@ -8,33 +8,8 @@ public class FlyingObj {
     private String id;
     private int positionX;
     private int positionY;
-    private Direction direction;
     private int live;
-
-    public FlyingObj() {
-    }
-
-    public FlyingObj(int startX, int startY, Direction direction, int live, String id) {
-        this.positionX = startX;
-        this.positionY = startY;
-        this.direction = direction;
-        this.live = live;
-        this.id = id;
-    }
-
-    public void moveUp() {
-        setPositionY(getPositionY() - 10);
-    }
-
-    public void moveDown() {
-        setPositionY(getPositionY() + 10);
-    }
-
-    public void moveLeft() {
-        setPositionX(getPositionX() - 10);
-    }
-
-    public void moveRight() {
-        setPositionX(getPositionX() + 10);
-    }
+    private Integer imageId;
+    private int rotate = 0;//角度
+    private static double planeSpeed = 5.0;
 }

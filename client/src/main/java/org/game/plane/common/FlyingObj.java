@@ -8,19 +8,17 @@ public class FlyingObj {
     private String id;
     private int positionX;
     private int positionY;
-    private Direction direction;
     private int live;
     private Integer imageId;
     private int rotate = 0;//角度
     private static double planeSpeed = 5.0;
-    private boolean ahead = true;
 
     public FlyingObj() {
     }
 
     public FlyingObj(int startX
             , int startY
-            , int direction
+            , int rotate
             , int live
             , String id
             , Integer imageId) {
@@ -34,13 +32,11 @@ public class FlyingObj {
 
     public FlyingObj(int startX
             , int startY
-            , Direction direction
             , int live
             , String id
             , Integer imageId) {
         this.positionX = startX;
         this.positionY = startY;
-        this.direction = direction;
         this.live = live;
         this.id = id;
         this.imageId = imageId;

@@ -7,8 +7,8 @@ import org.game.plane.constans.Direction;
 @Data
 public class NormlWeapon extends Weapon {
 
-    public Bullet getBullet(int startX, int startY, Direction direction) {
-        return new Bullet(startX, startY, direction, 5);
+    public Bullet getBullet(int startX, int startY) {
+        return new Bullet(startX, startY, 5);
     }
 
     public Bullet getBullet(int startX, int startY, int rotate) {
