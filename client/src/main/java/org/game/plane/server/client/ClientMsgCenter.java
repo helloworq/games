@@ -47,9 +47,14 @@ public class ClientMsgCenter {
 
     public static void receiveOperate(Channel channel, String msg) {
         String[] args = msg.split(OP_SPLIT);
-        String id = args[2];
+        String id = args[3];
         String order = args[1];
-        KeyMointer.getInstance().keyPress(order, id);
+        String isPressed = args[2];
+        if (1 == Integer.parseInt(isPressed)) {
+            KeyMointer.getInstance().keyPress(order, id);
+        } else {
+            KeyMointer.getInstance().keyRelease(order, id);
+        }
     }
 
     public static void sendOperate(Channel channel, String msg) {

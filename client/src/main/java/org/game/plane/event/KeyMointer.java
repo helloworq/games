@@ -2,6 +2,7 @@ package org.game.plane.event;
 
 import com.alibaba.fastjson2.JSON;
 import io.netty.channel.Channel;
+import io.netty.util.internal.StringUtil;
 import org.game.plane.frame.PlaneClient;
 import org.game.plane.constans.Config;
 import org.game.plane.constans.Direction;
@@ -14,13 +15,27 @@ import org.game.plane.server.client.WebSocketClient;
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 //键盘控制
 public class KeyMointer extends KeyAdapter {
+    private static final int PRESSED = 1;
+    private static final int RELEASED = 0;
     private static KeyMointer keyMointer;
     private PlaneClient planeClient;
     private Channel channel;
+    private static int rotate = 0;//角度
+    //将所有按键事件通过标志位处理
+    public static final Map<Character, Integer> keyMap = new ConcurrentHashMap<>();
+
+    static {
+        keyMap.put('w', RELEASED);
+        keyMap.put('a', RELEASED);
+        keyMap.put('s', RELEASED);
+        keyMap.put('d', RELEASED);
+    }
 
     private KeyMointer() {
     }
@@ -33,11 +48,28 @@ public class KeyMointer extends KeyAdapter {
         return keyMointer;
     }
 
+    /**
+     * 所有按键事件都不在本地处理，交由网络模块发送至服务器
+     *
+     * @param e
+     */
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == 27) {
             popUpSelection();
         }
-        ClientMsgCenter.sendOperate(channel, Config.KEY_MAP.getOrDefault(e.getKeyChar(), null));
+        ClientMsgCenter.sendOperate(channel
+                , Config.KEY_MAP.getOrDefault(e.getKeyChar(), StringUtil.EMPTY_STRING)
+                        + "-"
+                        + PRESSED
+        );
+    }
+
+    public void keyReleased(KeyEvent e) {
+        ClientMsgCenter.sendOperate(channel
+                , Config.KEY_MAP.getOrDefault(e.getKeyChar(), StringUtil.EMPTY_STRING)
+                        + "-"
+                        + RELEASED
+        );
     }
 
     public void keyPress(String key, String name) {
@@ -47,31 +79,41 @@ public class KeyMointer extends KeyAdapter {
             return;
         }
         //根据键入的数据改变蛇方向控制符
-        Direction direction = Direction.getByString(key);
-        if (Objects.nonNull(direction)) {
-            handleMove(direction, plane);
-            return;
-        }
-        Operation operation = Operation.getByString(key);
-        if (Objects.nonNull(operation)) {
-            handleShoot(operation, plane);
-            return;
+        switch (key) {
+            case "w":
+                keyMap.put('w', PRESSED);
+                break;
+            case "a":
+                keyMap.put('a', PRESSED);
+                break;
+            case "s":
+                keyMap.put('s', PRESSED);
+                break;
+            case "d":
+                keyMap.put('d', PRESSED);
+                break;
         }
     }
 
-    private static void handleMove(Direction direction, Plane plane) {
-        switch (direction) {
-            case UP:
-                plane.moveUp();
+    public void keyRelease(String key, String name) {
+        Plane plane = PlaneClient.getPlane(name);
+        if (Objects.isNull(plane)) {
+            LogServer.add("未找到飞机" + name);
+            return;
+        }
+        //根据键入的数据改变蛇方向控制符
+        switch (key) {
+            case "w":
+                keyMap.put('w', RELEASED);
                 break;
-            case LEFT:
-                plane.moveLeft();
+            case "a":
+                keyMap.put('a', RELEASED);
                 break;
-            case DOWN:
-                plane.moveDown();
+            case "s":
+                keyMap.put('s', RELEASED);
                 break;
-            case RIGHT:
-                plane.moveRight();
+            case "d":
+                keyMap.put('d', RELEASED);
                 break;
         }
     }

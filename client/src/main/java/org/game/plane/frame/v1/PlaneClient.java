@@ -1,26 +1,22 @@
-package org.game.plane.frame;
+package org.game.plane.frame.v1;
 
-import org.game.plane.ImageUtil;
 import org.game.plane.common.bullets.Bullet;
+import org.game.plane.common.planes.Plane;
 import org.game.plane.constans.Config;
-import org.game.plane.constans.Direction;
 import org.game.plane.event.KeyMointer;
 import org.game.plane.log.LogServer;
-import org.game.plane.common.planes.Plane;
 import org.game.plane.run.Run;
-import org.game.plane.source.GameSource;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class PlaneClient extends Frame {
+public class PlaneClient extends JFrame {
     //窗体参数
     public static final int X = 400;
     public static final int Y = 400;
@@ -36,12 +32,8 @@ public class PlaneClient extends Frame {
     public static List<Bullet> bulletList = new CopyOnWriteArrayList<>();
     //游戏速度
     public final static int GAME_SPEED = 20;
-    private static final int PRESSED = 1;
-    private static final int RELEASED = 0;
     //主飞机
     //public static final Plane plane = new Plane(StartPositionX, StartPositionY, Direction.UP, "");
-    //画布
-    private Image offScreenImage = null;//用于实现双缓冲
 
     public PlaneClient() {
         this.setBounds(0, 0, X, Y); //设置窗体大小和位置
@@ -53,14 +45,14 @@ public class PlaneClient extends Frame {
             }
         });
         //调用键盘
-        addKeyListener(KeyMointer.getInstance(this));
+        //addKeyListener(KeyMointer.getInstance(this));
     }
 
     public void lanch() throws InterruptedException {
         //开始
         while (true) {
-            repaint();
             Thread.sleep(GAME_SPEED);
+            repaint();
         }
     }
 
@@ -81,11 +73,8 @@ public class PlaneClient extends Frame {
 
     private void drawPlane(Graphics g) {
         for (Plane plane : planeList) {
-            handleMove(plane);
-            BufferedImage image = ImageUtil.rotateImage(GameSource.get(plane.getImageId()), plane.getRotate());
-            g.drawImage(image, plane.getPositionX(), plane.getPositionY(), null);
-//            g.setColor(Color.gray);
-//            g.fillRect(plane.getPositionX(), plane.getPositionY(), PlaneSize, PlaneSize);
+            g.setColor(Color.gray);
+            g.fillRect(plane.getPositionX(), plane.getPositionY(), PlaneSize, PlaneSize);
         }
     }
 
@@ -119,21 +108,6 @@ public class PlaneClient extends Frame {
         return position;
     }
 
-    private void handleMove(Plane plane) {
-        if (KeyMointer.keyMap.get('w') == PRESSED) {
-            plane.planeMove(1, -1);
-        }
-        if (KeyMointer.keyMap.get('a') == PRESSED) {
-            plane.setRotate(plane.getRotate() + 5);
-        }
-        if (KeyMointer.keyMap.get('s') == PRESSED) {
-            plane.planeMove(1, -1);
-        }
-        if (KeyMointer.keyMap.get('d') == PRESSED) {
-            plane.setRotate(plane.getRotate() - 5);
-        }
-    }
-
     private void drawMsg(Graphics g) {
         g.drawString("生命: " + 1, 330, 50);
         g.drawString("积分: " + Config.INIT_SCORES, 330, 70);
@@ -157,25 +131,21 @@ public class PlaneClient extends Frame {
 
     //画图函数，这个是重写paint，Frame类的内置函数
     @Override
-    public void update(Graphics g) {
+    public void paint(Graphics g) {
         //逐个读取链表中的节点数据，循环打印节点
-        if (offScreenImage == null) {
-            offScreenImage = this.createImage(X, Y);//创建一张大小和窗口大小一样的虚拟图片
-        }
-        Graphics gOffScreen = offScreenImage.getGraphics();//获得画笔
-        //刷新背景，否则物体运动痕迹会保留
-        Color c = gOffScreen.getColor();
-        gOffScreen.setColor(Color.white);
-        gOffScreen.fillRect(0, 0, X, Y);
-
-        drawPlane(gOffScreen);
-        drawBullets(gOffScreen);
-        drawMsg(gOffScreen);
-        drawCircleBullte(gOffScreen);
-
-
-        gOffScreen.setColor(c);
-        paint(gOffScreen);//画到虚拟图片上
-        g.drawImage(offScreenImage, 0, 0, null);//把图片画到屏幕上
+        super.paint(g);
+        drawPlane(g);
+        drawBullets(g);
+        drawMsg(g);
+        drawCircleBullte(g);
+//        super.paint(g);
+//        Image image = createImage(400, 400);
+//
+//        Graphics g2 = image.getGraphics();
+//        drawPlane(g2);
+//        drawBullets(g2);
+//        drawMsg(g2);
+//
+//        g.drawImage(image, 0, 0, null);
     }
 }

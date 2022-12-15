@@ -9,8 +9,8 @@ import org.game.plane.constans.Direction;
 public class Bullet extends FlyingObj {
     private int speed;
 
-    public Bullet(int startX, int startY, Direction direction) {
-        super(startX, startY, direction, Config.INIT_ALIVE, null);
+    public Bullet(int startX, int startY, Direction direction, Integer imageId) {
+        super(startX, startY, direction, Config.INIT_ALIVE, null, imageId);
     }
 
     public void move() {
