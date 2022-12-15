@@ -127,7 +127,7 @@ public class PlaneClient extends Frame {
             plane.setRotate(plane.getRotate() + 5);
         }
         if (KeyMointer.keyMap.get('s') == PRESSED) {
-            plane.planeMove(1, -1);
+            plane.planeMove(-1, 1);
         }
         if (KeyMointer.keyMap.get('d') == PRESSED) {
             plane.setRotate(plane.getRotate() - 5);
