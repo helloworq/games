@@ -5,6 +5,7 @@ import io.netty.util.internal.StringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.game.plane.server.msgbroker.entity.Message;
+import org.game.plane.server.msgbroker.operate.Operate;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -34,7 +35,7 @@ public class MsgBroker {
     @Getter
     @AllArgsConstructor
     public enum Flag {
-        MSG_CHANGE_NAME("@@ChangeName", ((channel, s) -> System.out.println(s))),
+        MSG_CHANGE_NAME("@@ChangeName", (Operate::changeName)),
         MSG_SYSTEM("@@MsgFromSystem", ((channel, s) -> System.out.println(s))),
         MSG_USER("@@MsgFromUser", ((channel, s) -> System.out.println(s))),
         MSG_OPERATE("@@MsgOperate", ((channel, s) -> System.out.println(s))),

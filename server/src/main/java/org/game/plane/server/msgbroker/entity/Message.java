@@ -10,6 +10,7 @@ import lombok.Data;
 public class Message {
     private String sender;
     private String receiver;
+    private String name;
     private boolean send2All;//true -> 不取receiver的值。false -> 则获取receiver
     private String msg;
     private String operateFlag;//操作标记，根据此标记交由不同的处理器处理

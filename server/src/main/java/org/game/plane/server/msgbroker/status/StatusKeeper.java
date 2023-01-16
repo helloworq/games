@@ -24,12 +24,16 @@ public class StatusKeeper {
     //操作符前缀
     public static final String OP_SPLIT = "-";
 
-    private static String getUser(Channel channel) {
+    public static String getUser(Channel channel) {
         return USER_POOL.get(channel);
     }
 
     public static void addUser(Channel channel, String name) {
         USER_POOL.put(channel, name);
+    }
+
+    public static boolean userExists(String name) {
+        return USER_POOL.values().stream().anyMatch(e -> e.equals(name));
     }
 
     public static void removeUser(Channel channel) {
