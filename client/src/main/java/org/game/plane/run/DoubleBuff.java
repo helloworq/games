@@ -1,6 +1,7 @@
 package org.game.plane.run;
 
 import org.game.plane.ImageUtil;
+import org.game.plane.source.GameSource;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -21,11 +22,8 @@ public class DoubleBuff extends Frame {
     private static BufferedImage plane = null;
 
     static {
-        try {
-            plane = ImageIO.read(new File("D:\\DerbyCode\\games\\client\\src\\main\\resources\\images\\plane\\复古飞机.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //plane = ImageIO.read(new File("D:\\DerbyCode\\games\\client\\src\\main\\resources\\images\\plane\\复古飞机.png"));
+        plane = GameSource.get(1);
     }
 
     public void launchFrame() {
