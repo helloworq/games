@@ -3,7 +3,6 @@ package org.game.plane.frame;
 import org.game.plane.ImageUtil;
 import org.game.plane.common.bullets.Bullet;
 import org.game.plane.constans.Config;
-import org.game.plane.constans.Direction;
 import org.game.plane.event.KeyMointer;
 import org.game.plane.log.LogServer;
 import org.game.plane.common.planes.Plane;
@@ -15,12 +14,15 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PlaneClient extends Frame {
+    public static void main(String[] args) {
+        new PlaneClient();
+    }
+
     //窗体参数
     public static final int X = 400;
     public static final int Y = 400;
@@ -38,14 +40,9 @@ public class PlaneClient extends Frame {
     public final static int GAME_SPEED = 20;
     private static final int PRESSED = 1;
     private static final int RELEASED = 0;
-    //主飞机
-    //public static final Plane plane = new Plane(StartPositionX, StartPositionY, Direction.UP, "");
-    //画布
-    private Image offScreenImage = null;//用于实现双缓冲
 
     public PlaneClient() {
-        this.setBounds(0, 0, X, Y); //设置窗体大小和位置
-        this.setVisible(true); //使用该属性才能显示窗体
+        this.add(createSplitPanel());
         //实现程序运行关闭的功能
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -53,15 +50,9 @@ public class PlaneClient extends Frame {
             }
         });
         //调用键盘
-        addKeyListener(KeyMointer.getInstance(this));
-    }
-
-    public void lanch() throws InterruptedException {
-        //开始
-        while (true) {
-            repaint();
-            Thread.sleep(GAME_SPEED);
-        }
+        this.addKeyListener(KeyMointer.getInstance(this));
+        this.setBounds(0, 0, X, Y); //设置窗体大小和位置
+        this.setVisible(true); //使用该属性才能显示窗体
     }
 
     public void addPlane(Plane plane) {
@@ -159,27 +150,114 @@ public class PlaneClient extends Frame {
                 || bullet.getPositionY() > (Y - deviation));
     }
 
-    //画图函数，这个是重写paint，Frame类的内置函数
-    @Override
-    public void update(Graphics g) {
-        //逐个读取链表中的节点数据，循环打印节点
-        if (offScreenImage == null) {
-            offScreenImage = this.createImage(X, Y);//创建一张大小和窗口大小一样的虚拟图片
+
+    //游戏画面，开启双缓冲，嵌入到左面板
+    private class GamePanel extends JPanel {
+        public GamePanel() {
+            super(true);
+            lanch();
         }
-        Graphics gOffScreen = offScreenImage.getGraphics();//获得画笔
-        //刷新背景，否则物体运动痕迹会保留
-        Color c = gOffScreen.getColor();
-        gOffScreen.setColor(Color.white);
-        gOffScreen.fillRect(0, 0, X, Y);
 
-        drawPlane(gOffScreen);
-        drawBullets(gOffScreen);
-        drawMsg(gOffScreen);
-        drawCircleBullte(gOffScreen);
+        public void lanch() {
+            new Thread(() -> {
+                while (true) {
+                    try {
+                        Thread.sleep(20);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    repaint();
+                }
+            }).start();
+        }
+
+        //画图函数，这个是重写paint，Frame类的内置函数
+        @Override
+        public void paint(Graphics g) {
+            super.paint(g);
+            drawPlane(g);
+            drawBullets(g);
+            drawMsg(g);
+            drawCircleBullte(g);
+        }
+    }
+
+    private JComponent createSplitPanel() {
+        // 创建分隔面板
+        JSplitPane splitPane = new JSplitPane();
+
+        // 设置左右两边显示的组件
+        final JTabbedPane tabbedPane2 = new JTabbedPane();
+        tabbedPane2.addTab("全部", createTextPanel());
+        tabbedPane2.addTab("队伍", createTextPanel());
+        tabbedPane2.addTab("悄悄话", createTextPanel());
+
+        splitPane.setLeftComponent(new GamePanel());
+        splitPane.setRightComponent(tabbedPane2);
+
+        splitPane.setContinuousLayout(true);
+        splitPane.setDividerLocation(300);
+        splitPane.setEnabled(false);
+
+        return splitPane;
+    }
+
+    /**
+     * 创建一个面板，面板中心显示一个标签，用于表示某个选项卡需要显示的内容
+     */
+    private JComponent createTextPanel() {
+        // 创建面板, 使用一个 1 行 1 列的网格布局（为了让标签的宽高自动撑满面板）
+        SpringLayout layout = new SpringLayout();
+        JPanel panel = new JPanel(layout);
+
+        //文本域
+        JScrollPane msgScreen = new JScrollPane();//使用滑动组件包装输入框
+        JTextArea textArea4MsgScreen = new JTextArea();
+        textArea4MsgScreen.setLineWrap(true);
+        textArea4MsgScreen.setEditable(false);
+        msgScreen.setViewportView(textArea4MsgScreen);
+
+        //输入框
+        JScrollPane inputArea = new JScrollPane();//使用滑动组件包装输入框
+        JTextArea textArea4InputArea = new JTextArea();
+        textArea4InputArea.setLineWrap(true);
+        inputArea.setViewportView(textArea4InputArea);
+
+        //提交按钮
+        JButton btn = new JButton("发送");
+        btn.addActionListener(e -> {
+            String content = textArea4InputArea.getText();
+            textArea4MsgScreen.append(content + "\n");
+            textArea4InputArea.setText("");
+        });
+        //清屏
+        JButton btnClear = new JButton("清屏");
+        btnClear.addActionListener(e -> textArea4MsgScreen.setText(""));
 
 
-        gOffScreen.setColor(c);
-        paint(gOffScreen);//画到虚拟图片上
-        g.drawImage(offScreenImage, 0, 0, null);//把图片画到屏幕上
+        // 添加标签到面板
+        panel.add(msgScreen);
+        panel.add(inputArea);
+        panel.add(btn);
+        panel.add(btnClear);
+
+        //调整位置
+        layout.putConstraint(SpringLayout.WEST, msgScreen, 5, SpringLayout.WEST, panel);
+        layout.putConstraint(SpringLayout.NORTH, msgScreen, 5, SpringLayout.NORTH, panel);
+        layout.putConstraint(SpringLayout.EAST, msgScreen, -5, SpringLayout.EAST, panel);
+        layout.putConstraint(SpringLayout.SOUTH, msgScreen, -70, SpringLayout.SOUTH, panel);
+
+        layout.putConstraint(SpringLayout.WEST, btn, 5, SpringLayout.WEST, panel);
+        layout.putConstraint(SpringLayout.NORTH, btn, 10, SpringLayout.SOUTH, msgScreen);
+
+        layout.putConstraint(SpringLayout.WEST, btnClear, 5, SpringLayout.WEST, panel);
+        layout.putConstraint(SpringLayout.NORTH, btnClear, 5, SpringLayout.SOUTH, btn);
+
+        layout.putConstraint(SpringLayout.WEST, inputArea, 5, SpringLayout.EAST, btn);
+        layout.putConstraint(SpringLayout.NORTH, inputArea, 10, SpringLayout.SOUTH, msgScreen);
+        layout.putConstraint(SpringLayout.EAST, inputArea, -5, SpringLayout.EAST, panel);
+        layout.putConstraint(SpringLayout.SOUTH, inputArea, -5, SpringLayout.SOUTH, panel);
+
+        return panel;
     }
 }
