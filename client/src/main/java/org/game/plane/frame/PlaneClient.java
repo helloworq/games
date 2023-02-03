@@ -27,6 +27,7 @@ public class PlaneClient extends Frame {
     public static final int X = 400;
     public static final int Y = 400;
     public static final int deviation = 10;
+    public static final int WINDOW_SPLITER = 300;
     //蛇的初始坐标
     public int StartPositionX = 200;
     public int StartPositionY = 200;
@@ -80,19 +81,25 @@ public class PlaneClient extends Frame {
 
     private void drawBullets(Graphics g) {
         for (Bullet bullet : bulletList) {
-            recyclingBullets();
             bullet.bulletMove();
-
             BufferedImage image = ImageUtil.rotateImage(GameSource.get(bullet.getImageId()), bullet.getRotate());
             g.drawImage(image, bullet.getPositionX(), bullet.getPositionY(), null);
+
+            recyclingBullets();
         }
     }
 
     private void drawCircleBullte(Graphics g) {
         if (Objects.nonNull(planeList) && !planeList.isEmpty()) {
             Plane plane = planeList.get(0);
-            Run.Position position = getCirclePosition();
-            g.drawString("环绕", plane.getPositionX() + position.getX(), plane.getPositionY() + position.getY());
+            g.drawString("测试",10,10);
+            //Run.Position position = getCirclePosition();
+            g.drawString(plane.getId(), plane.getPositionX(), plane.getPositionY() + 50);
+            if (planeList.size()>1){
+                Plane plane2 = planeList.get(1);
+                //Run.Position position = getCirclePosition();
+                g.drawString(plane2.getId(), plane2.getPositionX(), plane2.getPositionY() + 50);
+            }
         }
     }
 
@@ -144,10 +151,10 @@ public class PlaneClient extends Frame {
      * 回收越界子弹
      */
     private void recyclingBullets() {
-        bulletList.removeIf(bullet -> bullet.getPositionX() < deviation
-                || bullet.getPositionX() > (X - deviation)
-                || bullet.getPositionY() < deviation
-                || bullet.getPositionY() > (Y - deviation));
+        bulletList.removeIf(bullet -> bullet.getPositionX() < -10
+                || bullet.getPositionX() > WINDOW_SPLITER
+                || bullet.getPositionY() < -10
+                || bullet.getPositionY() >WINDOW_SPLITER);
     }
 
 
@@ -196,7 +203,7 @@ public class PlaneClient extends Frame {
         splitPane.setRightComponent(tabbedPane2);
 
         splitPane.setContinuousLayout(true);
-        splitPane.setDividerLocation(300);
+        splitPane.setDividerLocation(WINDOW_SPLITER);
         splitPane.setEnabled(false);
 
         return splitPane;

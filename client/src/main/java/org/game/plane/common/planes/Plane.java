@@ -17,7 +17,7 @@ public class Plane extends FlyingObj {
     }
 
     public Plane(int startX, int startY, String id) {
-        super(startX, startY, Config.INIT_ALIVE, id, 1);
+        super(startX, startY, Config.INIT_ALIVE, id, 6);
     }
 
     public void shoot() {
