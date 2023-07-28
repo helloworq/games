@@ -1,10 +1,14 @@
-package org.game.server.entity;
+package org.game.api.entity;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import io.netty.channel.Channel;
 import lombok.Data;
 
 @Data
 public class Message {
     private String MsgId;
+    @JSONField(serialize = false)
+    private Channel channel;
 
     private String senderId;
     private String senderName;

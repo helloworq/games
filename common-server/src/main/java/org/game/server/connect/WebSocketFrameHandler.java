@@ -21,8 +21,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-import org.game.server.entity.Message;
-import org.game.server.entity.User;
+import org.game.api.entity.Message;
+import org.game.api.entity.User;
 import org.game.server.operate.Dispatcher;
 import org.game.server.pools.UserPools;
 
@@ -34,7 +34,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         //初次链接到服务器
-        String id = ctx.channel().id().asLongText();
+        String id = ctx.channel().id().asShortText();
         Channel channel = ctx.channel();
 
         User user = new User();
@@ -48,7 +48,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        String id = ctx.channel().id().asLongText();
+        String id = ctx.channel().id().asShortText();
         UserPools.offline(id);
     }
 
@@ -58,8 +58,8 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
             String request = ((TextWebSocketFrame) frame).text();
 
             Message message = JSONObject.parseObject(request, Message.class);
+            message.setChannel(ctx.channel());
             Dispatcher.doDispatcher(message);
-            System.out.println(666);
         } else {
             String message = "unsupported frame type: " + frame.getClass().getName();
             throw new UnsupportedOperationException(message);

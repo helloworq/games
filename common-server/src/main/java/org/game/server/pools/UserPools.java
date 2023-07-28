@@ -1,10 +1,11 @@
 package org.game.server.pools;
 
+import com.alibaba.fastjson2.JSON;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import org.game.server.entity.Message;
-import org.game.server.entity.User;
-import org.game.server.operate.enums.UserStatusEnum;
+import org.game.api.entity.Message;
+import org.game.api.entity.User;
+import org.game.api.operate.enums.UserStatusEnum;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -37,12 +38,12 @@ public class UserPools {
         String receiverId = message.getReceiverId();
         User receiver = UserMap.get(receiverId);
         if (Objects.nonNull(receiver)) {
-            receiver.getChannel().writeAndFlush(new TextWebSocketFrame(message.getBody()));
+            receiver.getChannel().writeAndFlush(new TextWebSocketFrame(JSON.toJSONString(message)));
         }
     }
 
     public static void send2All(Message message) {
-        UserMap.values().forEach(e -> e.getChannel().writeAndFlush(new TextWebSocketFrame(message.getBody())));
+        UserMap.values().forEach(e -> e.getChannel().writeAndFlush(JSON.toJSONString(message)));
     }
 
     public static void updateUser(User user) {
@@ -52,6 +53,10 @@ public class UserPools {
 
     public static User getUser(String id) {
         return UserMap.get(id);
+    }
+
+    public static User getUserByChannel(Channel c) {
+        return UserMap.values().stream().filter(e -> c.equals(e.getChannel())).findFirst().orElse(null);
     }
 
     public static List<User> getUserList() {

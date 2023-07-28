@@ -1,8 +1,8 @@
-package org.game.server.entity;
+package org.game.api.entity;
 
 import io.netty.channel.Channel;
 import lombok.Data;
-import org.game.server.operate.enums.UserStatusEnum;
+import org.game.api.operate.enums.UserStatusEnum;
 
 @Data
 public class User {

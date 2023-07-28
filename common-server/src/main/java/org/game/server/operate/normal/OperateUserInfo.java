@@ -1,8 +1,9 @@
 package org.game.server.operate.normal;
 
 import com.alibaba.fastjson2.JSON;
-import org.game.server.entity.Message;
-import org.game.server.entity.User;
+import org.game.api.entity.Message;
+import org.game.api.entity.User;
+import org.game.api.operate.enums.OperateEnum;
 import org.game.server.operate.chat.OperateChat;
 import org.game.server.pools.UserPools;
 
@@ -20,11 +21,15 @@ public class OperateUserInfo {
     }
 
     public static void getUserList(Message message) {
-        String senderId = message.getSenderId();
+        User user = UserPools.getUserByChannel(message.getChannel());
+        if (Objects.nonNull(user)) {
+            String senderId = user.getId();
 
-        message.setReceiverId(senderId);
-        message.setBody(JSON.toJSONString(UserPools.getUserList()));
+            message.setOperateCode(OperateEnum.DISPLAY.getCode());
+            message.setReceiverId(senderId);
+            message.setBody(JSON.toJSONString(UserPools.getUserList()));
 
-        OperateChat.chat(message);
+            OperateChat.chat(message);
+        }
     }
 }

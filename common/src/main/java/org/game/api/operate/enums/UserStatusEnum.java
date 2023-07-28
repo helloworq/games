@@ -1,4 +1,4 @@
-package org.game.server.operate.enums;
+package org.game.api.operate.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

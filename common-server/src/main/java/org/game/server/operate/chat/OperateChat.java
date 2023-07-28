@@ -1,7 +1,7 @@
 package org.game.server.operate.chat;
 
-import org.game.server.entity.Message;
-import org.game.server.operate.enums.SendTypeEnum;
+import org.game.api.entity.Message;
+import org.game.api.operate.enums.SendTypeEnum;
 import org.game.server.pools.UserPools;
 
 public class OperateChat {
