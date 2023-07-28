@@ -19,7 +19,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.game.plane.server.server.WebSocketServer</mainClass>
+                            <mainClass>org.game.server.connect.WebSocketServer</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

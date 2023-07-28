@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>server</artifactId>
+    <artifactId>common-server</artifactId>
 
     <build>
         <plugins>
@@ -37,6 +37,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>
