@@ -23,7 +23,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import org.game.api.entity.Message;
 import org.game.api.entity.User;
-import org.game.server.operate.Dispatcher;
+import org.game.server.Dispatcher;
 import org.game.server.pools.UserPools;
 
 /**

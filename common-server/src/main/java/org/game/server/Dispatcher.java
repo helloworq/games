@@ -1,8 +1,8 @@
-package org.game.client.operate;
-
+package org.game.server;
 
 import org.game.api.entity.Message;
-import org.game.client.operate.chat.OperateChat;
+import org.game.server.operate.chat.OperateChat;
+import org.game.server.operate.normal.OperateUserInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,12 +15,13 @@ public class Dispatcher {
     private static final Map<Integer, Consumer<Message>> OperateDispatcher = new HashMap<>();
 
     static {
-        OperateDispatcher.put(5, OperateChat::showInWindow);
+        OperateDispatcher.put(2, OperateChat::chat);
+        OperateDispatcher.put(3, OperateUserInfo::changeUsername);
+        OperateDispatcher.put(4, OperateUserInfo::getUserList);
     }
 
     public static void doDispatcher(Message message) {
         int code = message.getOperateCode();
-        OperateDispatcher.getOrDefault(code, (e) -> {
-        }).accept(message);
+        OperateDispatcher.getOrDefault(code, (e) -> {}).accept(message);
     }
 }

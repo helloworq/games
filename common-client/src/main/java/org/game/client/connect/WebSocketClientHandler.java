@@ -52,7 +52,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketHandshakeException;
 import io.netty.util.CharsetUtil;
 import org.game.api.entity.Message;
-import org.game.client.operate.Dispatcher;
+import org.game.client.Dispatcher;
 
 public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> {
 
