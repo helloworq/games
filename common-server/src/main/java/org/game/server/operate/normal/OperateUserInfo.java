@@ -11,9 +11,17 @@ import java.util.Objects;
 
 public class OperateUserInfo {
 
+    private static String getUserId(Message message) {
+        User user = UserPools.getUserByChannel(message.getChannel());
+        if (Objects.nonNull(user)) {
+            return user.getId();
+        }
+        return null;
+    }
+
     public static void changeUsername(Message message) {
-        String id = message.getSenderId();
-        User user = UserPools.getUser(id);
+        String senderId = getUserId(message);
+        User user = UserPools.getUser(senderId);
         if (Objects.nonNull(user)) {
             user.setName(message.getSenderName());
             UserPools.updateUser(user);
@@ -21,15 +29,12 @@ public class OperateUserInfo {
     }
 
     public static void getUserList(Message message) {
-        User user = UserPools.getUserByChannel(message.getChannel());
-        if (Objects.nonNull(user)) {
-            String senderId = user.getId();
+        String senderId = getUserId(message);
 
-            message.setOperateCode(OperateEnum.DISPLAY.getCode());
-            message.setReceiverId(senderId);
-            message.setBody(JSON.toJSONString(UserPools.getUserList()));
+        message.setOperateCode(OperateEnum.DISPLAY.getCode());
+        message.setReceiverId(senderId);
+        message.setBody(JSON.toJSONString(UserPools.getUserList()));
 
-            OperateChat.chat(message);
-        }
+        OperateChat.chat(message);
     }
 }
